@@ -1,6 +1,7 @@
 package com.plazoleta.users.infrastructure.exceptionhandler;
 
 import com.plazoleta.users.domain.exceptions.AccountException;
+import com.plazoleta.users.infrastructure.adapters.input.rest.InternalUsersController;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,13 @@ public class ApiExceptionHandler {
     @ExceptionHandler(AccountException.class)
     ResponseEntity<ErrorResponse> account(AccountException exception, HttpServletRequest request) {
         return response(HttpStatusCode.valueOf(exception.status()), exception.code(), exception.getMessage(), Map.of(), request);
+    }
+
+    @ExceptionHandler(InternalUsersController.InternalServiceAuthException.class)
+    ResponseEntity<ErrorResponse> internalAuth(InternalUsersController.InternalServiceAuthException exception,
+                                                HttpServletRequest request) {
+        return response(exception.status(), exception.status() == HttpStatus.SERVICE_UNAVAILABLE
+                ? "SERVICE_AUTH_NOT_CONFIGURED" : "INVALID_SERVICE_CREDENTIALS", exception.getMessage(), Map.of(), request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
