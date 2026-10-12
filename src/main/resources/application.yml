@@ -1,0 +1,37 @@
+server:
+  port: ${SERVER_PORT:8081}
+spring:
+  config:
+    import: "optional:file:.env[.properties],optional:file:../.env[.properties]"
+  application:
+    name: users-service
+  datasource:
+    url: ${USERS_DB_URL:jdbc:mysql://localhost:3306/plazoleta_users?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC}
+    username: ${USERS_DB_USERNAME}
+    password: ${USERS_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # El esquema lo crea db/mysql-init.sql; update solo agrega lo que falte, nunca borra datos.
+      ddl-auto: ${USERS_JPA_DDL_AUTO:update}
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:${USERS_JWT_SECRET}}
+    expiration: ${USERS_JWT_EXPIRATION:PT1H}
+  internal:
+    token: ${USERS_INTERNAL_TOKEN}
+  plazoleta:
+    # Plazoleta confirma quién es el dueño de un restaurante al crear empleados (HU-6).
+    base-url: ${PLAZOLETA_SERVICE_BASE_URL:http://localhost:8080}
+  bootstrap:
+    admin:
+      email: ${ADMIN_BOOTSTRAP_EMAIL:}
+      password: ${ADMIN_BOOTSTRAP_PASSWORD:}
+      name: ${ADMIN_BOOTSTRAP_NAME:}
+      last-name: ${ADMIN_BOOTSTRAP_LAST_NAME:}
+      identity-document: ${ADMIN_BOOTSTRAP_IDENTITY_DOCUMENT:}
+      phone: ${ADMIN_BOOTSTRAP_PHONE:}
+      birth-date: ${ADMIN_BOOTSTRAP_BIRTH_DATE:}
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
