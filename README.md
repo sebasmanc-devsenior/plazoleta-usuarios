@@ -13,6 +13,7 @@ Cada historia se desarrolló en su propia rama y se unió a `main` en orden.
 
 | HU | Funcionalidad | Rama |
 | --- | --- | --- |
+| 1 | Crear propietario: validaciones, mayor de edad, clave con BCrypt | `historia1-crear-propietario` |
 
 ## Arquitectura hexagonal
 
