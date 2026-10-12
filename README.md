@@ -17,6 +17,7 @@ Cada historia se desarrolló en su propia rama y se unió a `main` en orden.
 | 2 | Consulta interna de usuarios (la usa restaurantes para validar al propietario) | `historia2-consulta-de-usuarios` |
 | 5 | Autenticación: login con JWT y permisos por rol | `historia5-autenticacion` |
 | 6 | Crear empleado (solo el dueño del restaurante) | `historia6-crear-empleado` |
+| 8 | Crear cuenta cliente | `historia8-crear-cliente` |
 
 ## Arquitectura hexagonal
 

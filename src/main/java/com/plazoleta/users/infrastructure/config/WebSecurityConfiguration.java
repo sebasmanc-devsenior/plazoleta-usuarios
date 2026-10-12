@@ -27,6 +27,8 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/owners").hasRole("ADMIN")
                         // HU-6 + HU-5: solo un propietario crea empleados (el dueño se valida en el caso de uso).
                         .requestMatchers("/api/employees").hasRole("PROPIETARIO")
+                        // HU-8: el registro de clientes es público.
+                        .requestMatchers("/api/clients").permitAll()
                         // Rutas entre microservicios: el controlador valida el token interno.
                         .requestMatchers("/internal/**").permitAll()
                         .anyRequest().denyAll())
