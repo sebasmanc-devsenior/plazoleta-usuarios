@@ -154,6 +154,24 @@ class UsersServiceIntegrationTest {
                 .andExpect(jsonPath("$.code").value("FORBIDDEN"));
     }
 
+    // ---------- HU-8 Crear cuenta cliente ----------
+
+    @Test
+    void createsClientWithoutTokenAndLetsItLogIn() throws Exception {
+        String created = mvc.perform(post("/api/clients").contentType(MediaType.APPLICATION_JSON)
+                        .content(account("Rita", "Client", "8001", "rita@example.test", null)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.role").value("CLIENTE"))
+                .andExpect(jsonPath("$.email").value("rita@example.test"))
+                .andReturn().getResponse().getContentAsString();
+        long userId = objectMapper.readTree(created).get("id").asLong();
+
+        JsonNode claims = JwtsTestSupport.claims(login("rita@example.test"));
+        assertThat(claims.get("sub").asText()).isEqualTo(Long.toString(userId));
+        assertThat(claims.get("role").asText()).isEqualTo("CLIENTE");
+        assertThat(claims.get("restaurantId") == null || claims.get("restaurantId").isNull()).isTrue();
+    }
+
     private NewAccountCommand command(String name, String identity, String email) {
         return new NewAccountCommand(name, "Test", identity, "+573001234567", LocalDate.of(1990, 1, 1), email,
                 "valid-pass-123");

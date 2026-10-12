@@ -1,6 +1,7 @@
 package com.plazoleta.users.infrastructure.config;
 
 import com.plazoleta.users.application.ports.input.BootstrapAdminUseCase;
+import com.plazoleta.users.application.ports.input.CreateClientUseCase;
 import com.plazoleta.users.application.ports.input.CreateEmployeeUseCase;
 import com.plazoleta.users.application.ports.input.CreateOwnerUseCase;
 import com.plazoleta.users.application.ports.input.GetUserUseCase;
@@ -11,6 +12,7 @@ import com.plazoleta.users.application.ports.output.TokenProviderPort;
 import com.plazoleta.users.application.ports.output.UserAccountRepositoryPort;
 import com.plazoleta.users.application.services.AccountRegistrar;
 import com.plazoleta.users.application.services.BootstrapAdminService;
+import com.plazoleta.users.application.services.CreateClientService;
 import com.plazoleta.users.application.services.CreateEmployeeService;
 import com.plazoleta.users.application.services.CreateOwnerService;
 import com.plazoleta.users.application.services.GetUserService;
@@ -59,5 +61,11 @@ public class BeanConfiguration {
     @Bean
     public CreateEmployeeUseCase createEmployeeUseCase(AccountRegistrar registrar, RestaurantDirectoryPort restaurants) {
         return new CreateEmployeeService(registrar, restaurants);
+    }
+
+    /** HU-8 */
+    @Bean
+    public CreateClientUseCase createClientUseCase(AccountRegistrar registrar) {
+        return new CreateClientService(registrar);
     }
 }
