@@ -1,12 +1,17 @@
 package com.plazoleta.users.infrastructure.config;
 
+import com.plazoleta.users.application.ports.input.BootstrapAdminUseCase;
 import com.plazoleta.users.application.ports.input.CreateOwnerUseCase;
 import com.plazoleta.users.application.ports.input.GetUserUseCase;
+import com.plazoleta.users.application.ports.input.LoginUseCase;
 import com.plazoleta.users.application.ports.output.PasswordEncoderPort;
+import com.plazoleta.users.application.ports.output.TokenProviderPort;
 import com.plazoleta.users.application.ports.output.UserAccountRepositoryPort;
 import com.plazoleta.users.application.services.AccountRegistrar;
+import com.plazoleta.users.application.services.BootstrapAdminService;
 import com.plazoleta.users.application.services.CreateOwnerService;
 import com.plazoleta.users.application.services.GetUserService;
+import com.plazoleta.users.application.services.LoginService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,5 +37,18 @@ public class BeanConfiguration {
     @Bean
     public GetUserUseCase getUserUseCase(UserAccountRepositoryPort accounts) {
         return new GetUserService(accounts);
+    }
+
+    /** HU-5 */
+    @Bean
+    public LoginUseCase loginUseCase(UserAccountRepositoryPort accounts, PasswordEncoderPort passwords,
+                                     TokenProviderPort tokens) {
+        return new LoginService(accounts, passwords, tokens);
+    }
+
+    /** HU-5: administrador inicial, necesario para crear propietarios. */
+    @Bean
+    public BootstrapAdminUseCase bootstrapAdminUseCase(UserAccountRepositoryPort accounts, AccountRegistrar registrar) {
+        return new BootstrapAdminService(accounts, registrar);
     }
 }
