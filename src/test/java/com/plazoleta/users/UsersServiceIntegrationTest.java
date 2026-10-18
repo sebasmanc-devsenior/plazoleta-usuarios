@@ -11,10 +11,12 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -85,6 +87,38 @@ class UsersServiceIntegrationTest {
                 .andExpect(jsonPath("$.role").value("PROPIETARIO"))
                 .andExpect(jsonPath("$.identityDocument").value("5001"))
                 .andExpect(jsonPath("$.phone").value("+573001234567"));
+    }
+
+    // ---------- HU-5 Autenticación ----------
+
+    @Test
+    void loginIssuesJwtWithUserIdAndRole() throws Exception {
+        var owner = createOwner.execute(command("Carlos", "6001", "carlos-6001@example.test"));
+        JsonNode claims = JwtsTestSupport.claims(login("CARLOS-6001@example.test"));
+        assertThat(claims.get("sub").asText()).isEqualTo(Long.toString(owner.id()));
+        assertThat(claims.get("email").asText()).isEqualTo("carlos-6001@example.test");
+        assertThat(claims.get("role").asText()).isEqualTo("PROPIETARIO");
+    }
+
+    @Test
+    void loginWithWrongPasswordReturnsUnauthorized() throws Exception {
+        createOwner.execute(command("Lia", "6002", "lia-6002@example.test"));
+        mvc.perform(post("/api/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"lia-6002@example.test\",\"password\":\"wrong-pass-123\"}"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("INVALID_CREDENTIALS"));
+    }
+
+    @Test
+    void onlyAdminCanCreateOwners() throws Exception {
+        var owner = createOwner.execute(command("Not", "6003", "not-admin-6003@example.test"));
+        mvc.perform(post("/api/owners").header("Authorization", "Bearer " + login(owner.email()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(account("Not", "Allowed", "6004", "not-allowed-6004@example.test", null)))
+                .andExpect(status().isForbidden());
+        mvc.perform(post("/api/owners").contentType(MediaType.APPLICATION_JSON)
+                        .content(account("No", "Auth", "6005", "no-auth-6005@example.test", null)))
+                .andExpect(status().isUnauthorized());
     }
 
     private NewAccountCommand command(String name, String identity, String email) {
