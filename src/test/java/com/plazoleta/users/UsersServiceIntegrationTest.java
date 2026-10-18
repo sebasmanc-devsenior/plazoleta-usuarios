@@ -3,20 +3,25 @@ package com.plazoleta.users;
 import com.plazoleta.users.application.dto.NewAccountCommand;
 import com.plazoleta.users.application.port.input.BootstrapAdminUseCase;
 import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
+import com.plazoleta.users.application.port.input.GetUserUseCase;
+import com.plazoleta.users.application.port.output.RestaurantDirectoryPort;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,6 +38,8 @@ class UsersServiceIntegrationTest {
     @Autowired private ObjectMapper objectMapper;
     @Autowired private CreateOwnerUseCase createOwner;
     @Autowired private BootstrapAdminUseCase bootstrapAdmin;
+    @Autowired private GetUserUseCase getUser;
+    @MockitoBean private RestaurantDirectoryPort restaurants;
     @Value("${app.internal.token}") private String internalToken;
 
     @Test
@@ -119,6 +126,32 @@ class UsersServiceIntegrationTest {
         mvc.perform(post("/api/owners").contentType(MediaType.APPLICATION_JSON)
                         .content(account("No", "Auth", "6005", "no-auth-6005@example.test", null)))
                 .andExpect(status().isUnauthorized());
+    }
+
+    // ---------- HU-6 Crear empleado ----------
+
+    @Test
+    void ownerCreatesEmployeeOnlyForOwnRestaurant() throws Exception {
+        var owner = createOwner.execute(command("Owner", "7001", "owner-7001@example.test"));
+        when(restaurants.findOwnerId(71L)).thenReturn(Optional.of(owner.id()));
+        when(restaurants.findOwnerId(72L)).thenReturn(Optional.of(owner.id() + 1000));
+        String ownerToken = login(owner.email());
+
+        String employeeJson = mvc.perform(post("/api/employees").header("Authorization", "Bearer " + ownerToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(account("Employee", "User", "7002", "employee-7002@example.test", 71)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.role").value("EMPLEADO"))
+                .andExpect(jsonPath("$.restaurantId").value(71))
+                .andReturn().getResponse().getContentAsString();
+        var employee = getUser.execute(objectMapper.readTree(employeeJson).get("id").asLong());
+        assertThat(JwtsTestSupport.claims(login(employee.email())).get("restaurantId").asLong()).isEqualTo(71);
+
+        mvc.perform(post("/api/employees").header("Authorization", "Bearer " + ownerToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(account("Other", "Employee", "7003", "employee-7003@example.test", 72)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value("FORBIDDEN"));
     }
 
     private NewAccountCommand command(String name, String identity, String email) {

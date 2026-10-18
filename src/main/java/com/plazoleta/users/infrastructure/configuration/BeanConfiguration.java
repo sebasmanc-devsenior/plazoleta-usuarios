@@ -1,14 +1,17 @@
 package com.plazoleta.users.infrastructure.configuration;
 
 import com.plazoleta.users.application.port.input.BootstrapAdminUseCase;
+import com.plazoleta.users.application.port.input.CreateEmployeeUseCase;
 import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
 import com.plazoleta.users.application.port.input.GetUserUseCase;
 import com.plazoleta.users.application.port.input.LoginUseCase;
 import com.plazoleta.users.application.port.output.PasswordEncoderPort;
+import com.plazoleta.users.application.port.output.RestaurantDirectoryPort;
 import com.plazoleta.users.application.port.output.TokenProviderPort;
 import com.plazoleta.users.application.port.output.UserAccountRepositoryPort;
 import com.plazoleta.users.application.service.AccountRegistrar;
 import com.plazoleta.users.application.service.BootstrapAdminService;
+import com.plazoleta.users.application.service.CreateEmployeeService;
 import com.plazoleta.users.application.service.CreateOwnerService;
 import com.plazoleta.users.application.service.GetUserService;
 import com.plazoleta.users.application.service.LoginService;
@@ -50,5 +53,11 @@ public class BeanConfiguration {
     @Bean
     public BootstrapAdminUseCase bootstrapAdminUseCase(UserAccountRepositoryPort accounts, AccountRegistrar registrar) {
         return new BootstrapAdminService(accounts, registrar);
+    }
+
+    /** HU-6 */
+    @Bean
+    public CreateEmployeeUseCase createEmployeeUseCase(AccountRegistrar registrar, RestaurantDirectoryPort restaurants) {
+        return new CreateEmployeeService(registrar, restaurants);
     }
 }
