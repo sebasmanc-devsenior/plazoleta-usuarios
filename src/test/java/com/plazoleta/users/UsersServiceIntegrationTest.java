@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 
 
@@ -19,5 +20,10 @@ class UsersServiceIntegrationTest {
 
     @Test
     void contextLoads() {
+    }
+
+    /** Hasta la HU-5 no hay autenticación: crear propietarios no requiere token. */
+    private MockHttpServletRequestBuilder asAdmin(MockHttpServletRequestBuilder request) {
+        return request;
     }
 }
