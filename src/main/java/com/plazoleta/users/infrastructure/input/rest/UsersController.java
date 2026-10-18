@@ -1,5 +1,6 @@
 package com.plazoleta.users.infrastructure.input.rest;
 
+import com.plazoleta.users.application.port.input.CreateClientUseCase;
 import com.plazoleta.users.application.port.input.CreateEmployeeUseCase;
 import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
 import com.plazoleta.users.application.port.input.LoginUseCase;
@@ -27,12 +28,14 @@ public class UsersController {
     private final CreateOwnerUseCase createOwnerUseCase;
     private final LoginUseCase loginUseCase;
     private final CreateEmployeeUseCase createEmployeeUseCase;
+    private final CreateClientUseCase createClientUseCase;
 
     public UsersController(CreateOwnerUseCase createOwnerUseCase, LoginUseCase loginUseCase,
-                           CreateEmployeeUseCase createEmployeeUseCase) {
+                           CreateEmployeeUseCase createEmployeeUseCase, CreateClientUseCase createClientUseCase) {
         this.createOwnerUseCase = createOwnerUseCase;
         this.loginUseCase = loginUseCase;
         this.createEmployeeUseCase = createEmployeeUseCase;
+        this.createClientUseCase = createClientUseCase;
     }
 
     @PostMapping("/owners")
@@ -61,6 +64,14 @@ public class UsersController {
         long requesterId = Long.parseLong(authentication.getName());
         return EmployeeAccountResponse.from(
                 createEmployeeUseCase.execute(request.toCommand(), request.restaurantId(), requesterId));
+    }
+
+    @PostMapping("/clients")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "HU-8 Create client account", description = "Public sign-up; the account gets the CLIENTE role.")
+    public AccountResponse createClient(@Valid @RequestBody CreateAccountRequest request) {
+        requireNoRestaurant(request);
+        return AccountResponse.from(createClientUseCase.execute(request.toCommand()));
     }
 
     private void requireNoRestaurant(CreateAccountRequest request) {
