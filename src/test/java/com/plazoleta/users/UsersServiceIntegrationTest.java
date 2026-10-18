@@ -1,7 +1,10 @@
 package com.plazoleta.users;
 
+import com.plazoleta.users.application.dto.NewAccountCommand;
+import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -10,6 +13,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.time.LocalDate;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,6 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UsersServiceIntegrationTest {
     @Autowired private MockMvc mvc;
+    @Autowired private CreateOwnerUseCase createOwner;
+    @Value("${app.internal.token}") private String internalToken;
 
     @Test
     void contextLoads() {
@@ -59,6 +65,22 @@ class UsersServiceIntegrationTest {
                 .andExpect(jsonPath("$.code").value("ACCOUNT_CONFLICT"))
                 .andExpect(jsonPath("$.path").value("/api/owners"))
                 .andExpect(jsonPath("$.timestamp").exists());
+    }
+
+    // ---------- HU-2 Consulta interna de usuarios (la usa el servicio de restaurantes) ----------
+
+    @Test
+    void internalLookupRequiresServiceBearerTokenAndReturnsValidationFields() throws Exception {
+        var owner = createOwner.execute(new NewAccountCommand("Internal", "Lookup", "5001", "+573001234567",
+                LocalDate.of(1994, 2, 3), "lookup@example.test", "valid-pass-123"));
+        mvc.perform(get("/internal/users/{id}", owner.id()))
+                .andExpect(status().isUnauthorized());
+        mvc.perform(get("/internal/users/{id}", owner.id()).header("Authorization", "Bearer " + internalToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(owner.id()))
+                .andExpect(jsonPath("$.role").value("PROPIETARIO"))
+                .andExpect(jsonPath("$.identityDocument").value("5001"))
+                .andExpect(jsonPath("$.phone").value("+573001234567"));
     }
 
     /** Hasta la HU-5 no hay autenticación: crear propietarios no requiere token. */
