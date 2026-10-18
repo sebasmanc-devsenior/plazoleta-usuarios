@@ -1,9 +1,11 @@
 package com.plazoleta.users.infrastructure.input.rest;
 
+import com.plazoleta.users.application.port.input.CreateEmployeeUseCase;
 import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
 import com.plazoleta.users.application.port.input.LoginUseCase;
 import com.plazoleta.users.infrastructure.input.rest.dto.AccountResponse;
 import com.plazoleta.users.infrastructure.input.rest.dto.CreateAccountRequest;
+import com.plazoleta.users.infrastructure.input.rest.dto.EmployeeAccountResponse;
 import com.plazoleta.users.infrastructure.input.rest.dto.LoginRequest;
 import com.plazoleta.users.infrastructure.input.rest.dto.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +13,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,10 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsersController {
     private final CreateOwnerUseCase createOwnerUseCase;
     private final LoginUseCase loginUseCase;
+    private final CreateEmployeeUseCase createEmployeeUseCase;
 
-    public UsersController(CreateOwnerUseCase createOwnerUseCase, LoginUseCase loginUseCase) {
+    public UsersController(CreateOwnerUseCase createOwnerUseCase, LoginUseCase loginUseCase,
+                           CreateEmployeeUseCase createEmployeeUseCase) {
         this.createOwnerUseCase = createOwnerUseCase;
         this.loginUseCase = loginUseCase;
+        this.createEmployeeUseCase = createEmployeeUseCase;
     }
 
     @PostMapping("/owners")
@@ -43,6 +49,18 @@ public class UsersController {
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         var result = loginUseCase.execute(request.email(), request.password());
         return new LoginResponse(result.token(), result.userId(), result.role());
+    }
+
+    @PostMapping("/employees")
+    @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "HU-6 Create employee", description = "PROPIETARIO only, and only for a restaurant they own.")
+    public EmployeeAccountResponse createEmployee(@Valid @RequestBody CreateAccountRequest request,
+                                                  Authentication authentication) {
+        // El id del propietario sale del JWT (subject), nunca del cuerpo de la petición.
+        long requesterId = Long.parseLong(authentication.getName());
+        return EmployeeAccountResponse.from(
+                createEmployeeUseCase.execute(request.toCommand(), request.restaurantId(), requesterId));
     }
 
     private void requireNoRestaurant(CreateAccountRequest request) {
