@@ -1,6 +1,7 @@
 package com.plazoleta.users;
 
 import com.plazoleta.users.application.dto.NewAccountCommand;
+import com.plazoleta.users.application.port.input.BootstrapAdminUseCase;
 import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,12 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,7 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UsersServiceIntegrationTest {
     @Autowired private MockMvc mvc;
+    @Autowired private ObjectMapper objectMapper;
     @Autowired private CreateOwnerUseCase createOwner;
+    @Autowired private BootstrapAdminUseCase bootstrapAdmin;
     @Value("${app.internal.token}") private String internalToken;
 
     @Test
@@ -83,9 +89,55 @@ class UsersServiceIntegrationTest {
                 .andExpect(jsonPath("$.phone").value("+573001234567"));
     }
 
-    /** Hasta la HU-5 no hay autenticación: crear propietarios no requiere token. */
-    private MockHttpServletRequestBuilder asAdmin(MockHttpServletRequestBuilder request) {
-        return request;
+    // ---------- HU-5 Autenticación ----------
+
+    @Test
+    void loginIssuesJwtWithUserIdAndRole() throws Exception {
+        var owner = createOwner.execute(command("Carlos", "6001", "carlos-6001@example.test"));
+        JsonNode claims = JwtsTestSupport.claims(login("CARLOS-6001@example.test"));
+        assertThat(claims.get("sub").asText()).isEqualTo(Long.toString(owner.id()));
+        assertThat(claims.get("email").asText()).isEqualTo("carlos-6001@example.test");
+        assertThat(claims.get("role").asText()).isEqualTo("PROPIETARIO");
+    }
+
+    @Test
+    void loginWithWrongPasswordReturnsUnauthorized() throws Exception {
+        createOwner.execute(command("Lia", "6002", "lia-6002@example.test"));
+        mvc.perform(post("/api/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"lia-6002@example.test\",\"password\":\"wrong-pass-123\"}"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("INVALID_CREDENTIALS"));
+    }
+
+    @Test
+    void onlyAdminCanCreateOwners() throws Exception {
+        var owner = createOwner.execute(command("Not", "6003", "not-admin-6003@example.test"));
+        mvc.perform(post("/api/owners").header("Authorization", "Bearer " + login(owner.email()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(account("Not", "Allowed", "6004", "not-allowed-6004@example.test", null)))
+                .andExpect(status().isForbidden());
+        mvc.perform(post("/api/owners").contentType(MediaType.APPLICATION_JSON)
+                        .content(account("No", "Auth", "6005", "no-auth-6005@example.test", null)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    private NewAccountCommand command(String name, String identity, String email) {
+        return new NewAccountCommand(name, "Test", identity, "+573001234567", LocalDate.of(1990, 1, 1), email,
+                "valid-pass-123");
+    }
+
+    private String login(String email) throws Exception {
+        String json = mvc.perform(post("/api/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"" + email + "\",\"password\":\"valid-pass-123\"}"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        return objectMapper.readTree(json).get("token").asText();
+    }
+
+    /** Desde la HU-5 solo el administrador crea propietarios. */
+    private MockHttpServletRequestBuilder asAdmin(MockHttpServletRequestBuilder request) throws Exception {
+        bootstrapAdmin.execute(new NewAccountCommand("Admin", "User", "3001", null, null, "admin@example.test",
+                "valid-pass-123"));
+        return request.header("Authorization", "Bearer " + login("admin@example.test"));
     }
 
     private String account(String name, String lastName, String identity, String email, Integer restaurantId) {
