@@ -69,7 +69,7 @@ class LoginServiceTest {
 
         assertThatThrownBy(() -> service.execute("carlos@test.com", "wrongPassword"))
                 .isInstanceOf(AccountException.class)
-                .hasMessageContaining("Invalid email or password");
+                .hasMessageContaining("Correo o clave incorrectos");
         verify(tokens, never()).issue(any());
     }
 
@@ -79,7 +79,7 @@ class LoginServiceTest {
 
         assertThatThrownBy(() -> service.execute("unknown@test.com", "password"))
                 .isInstanceOf(AccountException.class)
-                .hasMessageContaining("Invalid email or password");
+                .hasMessageContaining("Correo o clave incorrectos");
     }
 
     @Test
