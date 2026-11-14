@@ -23,11 +23,11 @@ public class CreateEmployeeService implements CreateEmployeeUseCase {
     @Override
     public UserAccount execute(NewAccountCommand command, Long restaurantId, long requesterId) {
         if (restaurantId == null || restaurantId <= 0) {
-            throw AccountException.badRequest("A positive restaurantId is required for EMPLEADO accounts");
+            throw AccountException.badRequest("Las cuentas de EMPLEADO necesitan un restaurantId positivo");
         }
         long ownerId = restaurants.findOwnerId(restaurantId).orElseThrow(AccountException::restaurantNotFound);
         if (ownerId != requesterId) {
-            throw AccountException.forbidden("Only the restaurant owner can create its employees");
+            throw AccountException.forbidden("Solo el propietario del restaurante puede crear sus empleados");
         }
         return registrar.register(command, UserRole.EMPLEADO, restaurantId);
     }

@@ -27,13 +27,13 @@ public class InternalUsersController {
     @GetMapping("/{userId}")
     public InternalUserResponse getUser(@PathVariable long userId, @RequestHeader(name = "Authorization", required = false) String authorization) {
         if (internalToken == null || internalToken.isBlank()) {
-            throw new InternalServiceAuthException(HttpStatus.SERVICE_UNAVAILABLE, "Service authentication is not configured");
+            throw new InternalServiceAuthException(HttpStatus.SERVICE_UNAVAILABLE, "La autenticación entre servicios no está configurada");
         }
         String supplied = authorization != null && authorization.startsWith("Bearer ")
                 ? authorization.substring(7) : "";
         if (!MessageDigest.isEqual(internalToken.getBytes(StandardCharsets.UTF_8),
                 supplied.getBytes(StandardCharsets.UTF_8))) {
-            throw new InternalServiceAuthException(HttpStatus.UNAUTHORIZED, "Invalid service credentials");
+            throw new InternalServiceAuthException(HttpStatus.UNAUTHORIZED, "Credenciales de servicio inválidas");
         }
         return InternalUserResponse.from(getUserUseCase.execute(userId));
     }

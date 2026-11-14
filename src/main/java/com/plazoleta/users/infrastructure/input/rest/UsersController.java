@@ -76,7 +76,7 @@ public class UsersController {
 
     private void requireNoRestaurant(CreateAccountRequest request) {
         if (request.restaurantId() != null) {
-            throw new IllegalArgumentException("restaurantId is not allowed for this account role");
+            throw new IllegalArgumentException("restaurantId no se permite para este tipo de cuenta");
         }
     }
 }
