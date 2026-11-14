@@ -1,5 +1,7 @@
 package com.plazoleta.users.infrastructure.output.http;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import java.time.Duration;
 import com.plazoleta.users.application.port.output.RestaurantDirectoryPort;
 import com.plazoleta.users.domain.exception.AccountException;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +21,16 @@ public class PlazoletaRestaurantAdapter implements RestaurantDirectoryPort {
     private final RestClient client;
     private final String internalToken;
 
-    public PlazoletaRestaurantAdapter(@Value("${app.plazoleta.base-url}") String baseUrl,
-                                      @Value("${app.internal.token}") String internalToken) {
-        this.client = RestClient.builder().baseUrl(baseUrl).build();
+    /** Constructor para las pruebas: usa los tiempos de espera por defecto. */
+    public PlazoletaRestaurantAdapter(String baseUrl, String internalToken) {
+        this(baseUrl, internalToken, HttpClients.DEFAULT_CONNECT_TIMEOUT, HttpClients.DEFAULT_READ_TIMEOUT);
+    }
+
+    @Autowired
+    public PlazoletaRestaurantAdapter(@Value("${app.plazoleta.base-url}") String baseUrl, @Value("${app.internal.token}") String internalToken,
+            @Value("${app.http.connect-timeout:2s}") Duration connectTimeout,
+            @Value("${app.http.read-timeout:5s}") Duration readTimeout) {
+        this.client = HttpClients.restClient(baseUrl, connectTimeout, readTimeout);
         this.internalToken = internalToken;
     }
 
