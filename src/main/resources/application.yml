@@ -23,6 +23,10 @@ app:
   plazoleta:
     # Plazoleta confirma quién es el dueño de un restaurante al crear empleados (HU-6).
     base-url: ${PLAZOLETA_SERVICE_BASE_URL:http://localhost:8080}
+  http:
+    # Tiempo máximo para conectar y para recibir la respuesta de otro microservicio (503 si se cumple).
+    connect-timeout: ${HTTP_CONNECT_TIMEOUT:2s}
+    read-timeout: ${HTTP_READ_TIMEOUT:5s}
   bootstrap:
     admin:
       email: ${ADMIN_BOOTSTRAP_EMAIL:}
