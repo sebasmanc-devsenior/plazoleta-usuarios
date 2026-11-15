@@ -1,5 +1,7 @@
 package com.plazoleta.users.infrastructure.input.rest.dto;
 
+import com.plazoleta.users.domain.util.MensajesError;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.plazoleta.users.application.dto.NewAccountCommand;
 import jakarta.validation.constraints.Email;
@@ -13,14 +15,14 @@ import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record CreateAccountRequest(
-        @NotBlank(message = "El nombre es obligatorio") @Size(max = 100, message = "El nombre puede tener máximo 100 caracteres") String name,
-        @NotBlank(message = "El apellido es obligatorio") @Size(max = 100, message = "El apellido puede tener máximo 100 caracteres") String lastName,
-        @NotBlank(message = "El documento de identidad es obligatorio") @Pattern(regexp = "\\d+", message = "El documento de identidad solo puede tener dígitos") @Size(max = 40, message = "El documento de identidad puede tener máximo 40 caracteres") String identityDocument,
-        @Size(max = 13, message = "El celular debe tener máximo 13 caracteres") @Pattern(regexp = "^$|^(?:\\+\\d{7,12}|\\d{7,13})$", message = "El formato del celular no es válido") String phone,
-        @PastOrPresent(message = "La fecha de nacimiento no puede ser futura") LocalDate birthDate,
-        @NotBlank(message = "El correo es obligatorio") @Email(message = "El formato del correo no es válido") @Size(max = 254, message = "El correo puede tener máximo 254 caracteres") String email,
-        @NotBlank(message = "La clave es obligatoria") @Size(min = 8, max = 72, message = "La clave debe tener entre 8 y 72 caracteres") String password,
-        @Positive(message = "El restaurantId debe ser positivo") Long restaurantId) {
+        @NotBlank(message = MensajesError.NOMBRE_ES_OBLIGATORIO) @Size(max = 100, message = MensajesError.NOMBRE_PUEDE_TENER_MAXIMO_100_CARACTERES) String name,
+        @NotBlank(message = MensajesError.APELLIDO_ES_OBLIGATORIO) @Size(max = 100, message = MensajesError.APELLIDO_PUEDE_TENER_MAXIMO_100_CARACTERES) String lastName,
+        @NotBlank(message = MensajesError.DOCUMENTO_DE_IDENTIDAD_ES_OBLIGATORIO) @Pattern(regexp = "\\d+", message = MensajesError.DOCUMENTO_DE_IDENTIDAD_SOLO_PUEDE_TENER_DIGITOS) @Size(max = 40, message = MensajesError.DOCUMENTO_DE_IDENTIDAD_PUEDE_TENER_MAXIMO_40) String identityDocument,
+        @Size(max = 13, message = MensajesError.CELULAR_DEBE_TENER_MAXIMO_13_CARACTERES) @Pattern(regexp = "^$|^(?:\\+\\d{7,12}|\\d{7,13})$", message = MensajesError.FORMATO_DEL_CELULAR_NO_ES_VALIDO) String phone,
+        @PastOrPresent(message = MensajesError.FECHA_DE_NACIMIENTO_NO_PUEDE_SER_FUTURA) LocalDate birthDate,
+        @NotBlank(message = MensajesError.CORREO_ES_OBLIGATORIO) @Email(message = MensajesError.FORMATO_DEL_CORREO_NO_ES_VALIDO) @Size(max = 254, message = MensajesError.CORREO_PUEDE_TENER_MAXIMO_254_CARACTERES) String email,
+        @NotBlank(message = MensajesError.CLAVE_ES_OBLIGATORIA) @Size(min = 8, max = 72, message = MensajesError.CLAVE_DEBE_TENER_ENTRE_8_Y_72) String password,
+        @Positive(message = MensajesError.RESTAURANTID_DEBE_SER_POSITIVO) Long restaurantId) {
 
     public NewAccountCommand toCommand() {
         return new NewAccountCommand(name, lastName, identityDocument, phone, birthDate, email, password);

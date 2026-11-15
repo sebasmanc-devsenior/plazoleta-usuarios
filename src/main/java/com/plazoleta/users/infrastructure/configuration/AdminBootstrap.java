@@ -1,5 +1,7 @@
 package com.plazoleta.users.infrastructure.configuration;
 
+import com.plazoleta.users.domain.util.MensajesError;
+
 import com.plazoleta.users.application.dto.NewAccountCommand;
 import com.plazoleta.users.application.port.input.BootstrapAdminUseCase;
 import org.springframework.boot.ApplicationArguments;
@@ -44,10 +46,10 @@ public class AdminBootstrap implements ApplicationRunner {
         boolean noPassword = password.isBlank();
         if (noEmail && noPassword) return;
         if (noEmail || noPassword) {
-            throw new IllegalStateException("Configura ADMIN_BOOTSTRAP_EMAIL y ADMIN_BOOTSTRAP_PASSWORD juntos, o ninguno");
+            throw new IllegalStateException(MensajesError.CONFIGURA_ADMIN_BOOTSTRAP_EMAIL_Y_ADMIN_BOOTSTRAP);
         }
         if (name.isBlank() || lastName.isBlank() || identityDocument.isBlank() || password.length() < 8) {
-            throw new IllegalStateException("El administrador inicial necesita nombre, apellido, documento y una clave de al menos 8 caracteres");
+            throw new IllegalStateException(MensajesError.ADMINISTRADOR_INICIAL_NECESITA_NOMBRE_APELLIDO_DOCUMENTO_Y);
         }
         bootstrapAdminUseCase.execute(new NewAccountCommand(name, lastName, identityDocument, blankToNull(phone),
                 birthDate.isBlank() ? null : LocalDate.parse(birthDate), email, password));

@@ -1,5 +1,7 @@
 package com.plazoleta.users.infrastructure.configuration.security;
 
+import com.plazoleta.users.domain.util.MensajesError;
+
 import com.plazoleta.users.infrastructure.input.rest.exceptionhandler.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,13 +29,13 @@ public class ApiSecurityErrorHandlers implements AuthenticationEntryPoint, Acces
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
             throws IOException {
-        write(response, request, HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "Se requiere autenticación");
+        write(response, request, HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", MensajesError.REQUIERE_AUTENTICACION);
     }
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException exception)
             throws IOException {
-        write(response, request, HttpStatus.FORBIDDEN, "FORBIDDEN", "No tienes permisos para esta operación");
+        write(response, request, HttpStatus.FORBIDDEN, "FORBIDDEN", MensajesError.NO_TIENES_PERMISOS_PARA_ESTA_OPERACION);
     }
 
     private void write(HttpServletResponse response, HttpServletRequest request, HttpStatus status,

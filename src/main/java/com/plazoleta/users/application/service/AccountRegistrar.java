@@ -1,5 +1,7 @@
 package com.plazoleta.users.application.service;
 
+import com.plazoleta.users.domain.util.MensajesError;
+
 import com.plazoleta.users.application.dto.NewAccountCommand;
 import com.plazoleta.users.application.port.output.PasswordEncoderPort;
 import com.plazoleta.users.application.port.output.UserAccountRepositoryPort;
@@ -25,17 +27,17 @@ public class AccountRegistrar {
 
     public UserAccount register(NewAccountCommand command, UserRole role, Long restaurantId) {
         if (command == null) {
-            throw AccountException.badRequest("El cuerpo de la petición es obligatorio");
+            throw AccountException.badRequest(MensajesError.CUERPO_DE_LA_PETICION_ES_OBLIGATORIO);
         }
         AccountRules.validateNewAccount(command.name(), command.lastName(), command.identityDocument(),
                 command.phone(), command.birthDate(), command.email(), command.password(), role, restaurantId);
         String email = normalizeEmail(command.email());
         String identityDocument = command.identityDocument().trim();
         if (accounts.existsByEmail(email)) {
-            throw AccountException.conflict("El correo ya está registrado");
+            throw AccountException.conflict(MensajesError.CORREO_YA_ESTA_REGISTRADO);
         }
         if (accounts.existsByIdentityDocument(identityDocument)) {
-            throw AccountException.conflict("El documento de identidad ya está registrado");
+            throw AccountException.conflict(MensajesError.DOCUMENTO_DE_IDENTIDAD_YA_ESTA_REGISTRADO);
         }
         String phone = command.phone() == null ? null : command.phone().trim();
         return accounts.save(new UserAccount(null, command.name().trim(), command.lastName().trim(), identityDocument,

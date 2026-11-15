@@ -1,5 +1,7 @@
 package com.plazoleta.users.infrastructure.input.rest;
 
+import com.plazoleta.users.domain.util.MensajesError;
+
 import com.plazoleta.users.application.port.input.GetUserUseCase;
 import com.plazoleta.users.infrastructure.input.rest.dto.InternalUserResponse;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -27,13 +29,13 @@ public class InternalUsersController {
     @GetMapping("/{userId}")
     public InternalUserResponse getUser(@PathVariable long userId, @RequestHeader(name = "Authorization", required = false) String authorization) {
         if (internalToken == null || internalToken.isBlank()) {
-            throw new InternalServiceAuthException(HttpStatus.SERVICE_UNAVAILABLE, "La autenticación entre servicios no está configurada");
+            throw new InternalServiceAuthException(HttpStatus.SERVICE_UNAVAILABLE, MensajesError.AUTENTICACION_ENTRE_SERVICIOS_NO_ESTA_CONFIGURADA);
         }
         String supplied = authorization != null && authorization.startsWith("Bearer ")
                 ? authorization.substring(7) : "";
         if (!MessageDigest.isEqual(internalToken.getBytes(StandardCharsets.UTF_8),
                 supplied.getBytes(StandardCharsets.UTF_8))) {
-            throw new InternalServiceAuthException(HttpStatus.UNAUTHORIZED, "Credenciales de servicio inválidas");
+            throw new InternalServiceAuthException(HttpStatus.UNAUTHORIZED, MensajesError.CREDENCIALES_DE_SERVICIO_INVALIDAS);
         }
         return InternalUserResponse.from(getUserUseCase.execute(userId));
     }
