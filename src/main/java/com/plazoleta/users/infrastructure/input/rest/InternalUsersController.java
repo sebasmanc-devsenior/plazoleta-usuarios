@@ -2,7 +2,7 @@ package com.plazoleta.users.infrastructure.input.rest;
 
 import com.plazoleta.users.domain.util.MensajesError;
 
-import com.plazoleta.users.application.port.input.GetUserUseCase;
+import com.plazoleta.users.application.handler.IUserHandler;
 import com.plazoleta.users.infrastructure.input.rest.dto.InternalUserResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,12 +17,12 @@ import java.security.MessageDigest;
 @RestController
 @RequestMapping("/internal/users")
 public class InternalUsersController {
-    private final GetUserUseCase getUserUseCase;
+    private final IUserHandler userHandler;
     private final String internalToken;
 
-    public InternalUsersController(GetUserUseCase getUserUseCase,
+    public InternalUsersController(IUserHandler userHandler,
                                   @Value("${app.internal.token}") String internalToken) {
-        this.getUserUseCase = getUserUseCase;
+        this.userHandler = userHandler;
         this.internalToken = internalToken;
     }
 
@@ -37,7 +37,7 @@ public class InternalUsersController {
                 supplied.getBytes(StandardCharsets.UTF_8))) {
             throw new InternalServiceAuthException(HttpStatus.UNAUTHORIZED, MensajesError.CREDENCIALES_DE_SERVICIO_INVALIDAS);
         }
-        return InternalUserResponse.from(getUserUseCase.execute(userId));
+        return InternalUserResponse.from(userHandler.getUser(userId));
     }
 
     public static class InternalServiceAuthException extends RuntimeException {
