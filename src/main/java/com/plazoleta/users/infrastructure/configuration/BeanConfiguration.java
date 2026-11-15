@@ -2,23 +2,23 @@ package com.plazoleta.users.infrastructure.configuration;
 
 import com.plazoleta.users.application.handler.IUserHandler;
 import com.plazoleta.users.application.handler.UserHandler;
-import com.plazoleta.users.application.port.input.BootstrapAdminUseCase;
-import com.plazoleta.users.application.port.input.CreateClientUseCase;
-import com.plazoleta.users.application.port.input.CreateEmployeeUseCase;
-import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
-import com.plazoleta.users.application.port.input.GetUserUseCase;
-import com.plazoleta.users.application.port.input.LoginUseCase;
+import com.plazoleta.users.application.port.input.BootstrapAdminPort;
+import com.plazoleta.users.application.port.input.CreateClientPort;
+import com.plazoleta.users.application.port.input.CreateEmployeePort;
+import com.plazoleta.users.application.port.input.CreateOwnerPort;
+import com.plazoleta.users.application.port.input.GetUserPort;
+import com.plazoleta.users.application.port.input.LoginPort;
 import com.plazoleta.users.application.port.output.PasswordEncoderPort;
 import com.plazoleta.users.application.port.output.RestaurantDirectoryPort;
 import com.plazoleta.users.application.port.output.TokenProviderPort;
 import com.plazoleta.users.application.port.output.UserAccountRepositoryPort;
-import com.plazoleta.users.application.service.AccountRegistrar;
-import com.plazoleta.users.application.service.BootstrapAdminService;
-import com.plazoleta.users.application.service.CreateClientService;
-import com.plazoleta.users.application.service.CreateEmployeeService;
-import com.plazoleta.users.application.service.CreateOwnerService;
-import com.plazoleta.users.application.service.GetUserService;
-import com.plazoleta.users.application.service.LoginService;
+import com.plazoleta.users.application.usecase.AccountRegistrar;
+import com.plazoleta.users.application.usecase.BootstrapAdminUseCase;
+import com.plazoleta.users.application.usecase.CreateClientUseCase;
+import com.plazoleta.users.application.usecase.CreateEmployeeUseCase;
+import com.plazoleta.users.application.usecase.CreateOwnerUseCase;
+import com.plazoleta.users.application.usecase.GetUserUseCase;
+import com.plazoleta.users.application.usecase.LoginUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,46 +36,46 @@ public class BeanConfiguration {
 
     /** HU-1 */
     @Bean
-    public CreateOwnerUseCase createOwnerUseCase(AccountRegistrar registrar) {
-        return new CreateOwnerService(registrar);
+    public CreateOwnerPort createOwnerUseCase(AccountRegistrar registrar) {
+        return new CreateOwnerUseCase(registrar);
     }
 
     /** HU-2: consulta interna que usa el microservicio de restaurantes para validar al propietario. */
     @Bean
-    public GetUserUseCase getUserUseCase(UserAccountRepositoryPort accounts) {
-        return new GetUserService(accounts);
+    public GetUserPort getUserUseCase(UserAccountRepositoryPort accounts) {
+        return new GetUserUseCase(accounts);
     }
 
     /** HU-5 */
     @Bean
-    public LoginUseCase loginUseCase(UserAccountRepositoryPort accounts, PasswordEncoderPort passwords,
+    public LoginPort loginUseCase(UserAccountRepositoryPort accounts, PasswordEncoderPort passwords,
                                      TokenProviderPort tokens) {
-        return new LoginService(accounts, passwords, tokens);
+        return new LoginUseCase(accounts, passwords, tokens);
     }
 
     /** HU-5: administrador inicial, necesario para crear propietarios. */
     @Bean
-    public BootstrapAdminUseCase bootstrapAdminUseCase(UserAccountRepositoryPort accounts, AccountRegistrar registrar) {
-        return new BootstrapAdminService(accounts, registrar);
+    public BootstrapAdminPort bootstrapAdminUseCase(UserAccountRepositoryPort accounts, AccountRegistrar registrar) {
+        return new BootstrapAdminUseCase(accounts, registrar);
     }
 
     /** HU-6 */
     @Bean
-    public CreateEmployeeUseCase createEmployeeUseCase(AccountRegistrar registrar, RestaurantDirectoryPort restaurants) {
-        return new CreateEmployeeService(registrar, restaurants);
+    public CreateEmployeePort createEmployeeUseCase(AccountRegistrar registrar, RestaurantDirectoryPort restaurants) {
+        return new CreateEmployeeUseCase(registrar, restaurants);
     }
 
     /** HU-8 */
     @Bean
-    public CreateClientUseCase createClientUseCase(AccountRegistrar registrar) {
-        return new CreateClientService(registrar);
+    public CreateClientPort createClientUseCase(AccountRegistrar registrar) {
+        return new CreateClientUseCase(registrar);
     }
 
     /** Handler que usan los controladores de usuarios: delega en los casos de uso. */
     @Bean
-    public IUserHandler userHandler(CreateOwnerUseCase createOwnerUseCase, LoginUseCase loginUseCase,
-                                    CreateEmployeeUseCase createEmployeeUseCase,
-                                    CreateClientUseCase createClientUseCase, GetUserUseCase getUserUseCase) {
+    public IUserHandler userHandler(CreateOwnerPort createOwnerUseCase, LoginPort loginUseCase,
+                                    CreateEmployeePort createEmployeeUseCase,
+                                    CreateClientPort createClientUseCase, GetUserPort getUserUseCase) {
         return new UserHandler(createOwnerUseCase, loginUseCase, createEmployeeUseCase, createClientUseCase,
                 getUserUseCase);
     }

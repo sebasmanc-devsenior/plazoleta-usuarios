@@ -1,15 +1,15 @@
-package com.plazoleta.users.application.service;
+package com.plazoleta.users.application.usecase;
 
 import com.plazoleta.users.application.dto.NewAccountCommand;
-import com.plazoleta.users.application.port.input.BootstrapAdminUseCase;
+import com.plazoleta.users.application.port.input.BootstrapAdminPort;
 import com.plazoleta.users.application.port.output.UserAccountRepositoryPort;
 import com.plazoleta.users.domain.model.UserRole;
 
-public class BootstrapAdminService implements BootstrapAdminUseCase {
+public class BootstrapAdminUseCase implements BootstrapAdminPort {
     private final UserAccountRepositoryPort accounts;
     private final AccountRegistrar registrar;
 
-    public BootstrapAdminService(UserAccountRepositoryPort accounts, AccountRegistrar registrar) {
+    public BootstrapAdminUseCase(UserAccountRepositoryPort accounts, AccountRegistrar registrar) {
         this.accounts = accounts;
         this.registrar = registrar;
     }

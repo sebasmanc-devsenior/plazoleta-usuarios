@@ -1,14 +1,14 @@
-package com.plazoleta.users.application.service;
+package com.plazoleta.users.application.usecase;
 
-import com.plazoleta.users.application.port.input.GetUserUseCase;
+import com.plazoleta.users.application.port.input.GetUserPort;
 import com.plazoleta.users.application.port.output.UserAccountRepositoryPort;
 import com.plazoleta.users.domain.exception.AccountException;
 import com.plazoleta.users.domain.model.UserAccount;
 
-public class GetUserService implements GetUserUseCase {
+public class GetUserUseCase implements GetUserPort {
     private final UserAccountRepositoryPort accounts;
 
-    public GetUserService(UserAccountRepositoryPort accounts) {
+    public GetUserUseCase(UserAccountRepositoryPort accounts) {
         this.accounts = accounts;
     }
 
