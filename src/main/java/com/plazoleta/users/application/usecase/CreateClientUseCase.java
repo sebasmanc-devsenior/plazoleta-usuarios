@@ -1,15 +1,15 @@
-package com.plazoleta.users.application.service;
+package com.plazoleta.users.application.usecase;
 
 import com.plazoleta.users.application.dto.NewAccountCommand;
-import com.plazoleta.users.application.port.input.CreateClientUseCase;
+import com.plazoleta.users.application.port.input.CreateClientPort;
 import com.plazoleta.users.domain.model.UserAccount;
 import com.plazoleta.users.domain.model.UserRole;
 
 /** HU-8: registro abierto; la cuenta siempre queda con rol CLIENTE. */
-public class CreateClientService implements CreateClientUseCase {
+public class CreateClientUseCase implements CreateClientPort {
     private final AccountRegistrar registrar;
 
-    public CreateClientService(AccountRegistrar registrar) {
+    public CreateClientUseCase(AccountRegistrar registrar) {
         this.registrar = registrar;
     }
 

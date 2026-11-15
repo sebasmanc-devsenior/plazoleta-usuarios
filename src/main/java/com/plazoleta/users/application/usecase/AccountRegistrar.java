@@ -1,4 +1,4 @@
-package com.plazoleta.users.application.service;
+package com.plazoleta.users.application.usecase;
 
 import com.plazoleta.users.domain.util.MensajesError;
 

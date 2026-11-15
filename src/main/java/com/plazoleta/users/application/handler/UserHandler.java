@@ -2,24 +2,24 @@ package com.plazoleta.users.application.handler;
 
 import com.plazoleta.users.application.dto.LoginResult;
 import com.plazoleta.users.application.dto.NewAccountCommand;
-import com.plazoleta.users.application.port.input.CreateClientUseCase;
-import com.plazoleta.users.application.port.input.CreateEmployeeUseCase;
-import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
-import com.plazoleta.users.application.port.input.GetUserUseCase;
-import com.plazoleta.users.application.port.input.LoginUseCase;
+import com.plazoleta.users.application.port.input.CreateClientPort;
+import com.plazoleta.users.application.port.input.CreateEmployeePort;
+import com.plazoleta.users.application.port.input.CreateOwnerPort;
+import com.plazoleta.users.application.port.input.GetUserPort;
+import com.plazoleta.users.application.port.input.LoginPort;
 import com.plazoleta.users.domain.model.UserAccount;
 
 /** Delega en los casos de uso de usuarios. Se registra como @Bean en BeanConfiguration (sin Spring aquí). */
 public class UserHandler implements IUserHandler {
-    private final CreateOwnerUseCase createOwnerUseCase;
-    private final LoginUseCase loginUseCase;
-    private final CreateEmployeeUseCase createEmployeeUseCase;
-    private final CreateClientUseCase createClientUseCase;
-    private final GetUserUseCase getUserUseCase;
+    private final CreateOwnerPort createOwnerUseCase;
+    private final LoginPort loginUseCase;
+    private final CreateEmployeePort createEmployeeUseCase;
+    private final CreateClientPort createClientUseCase;
+    private final GetUserPort getUserUseCase;
 
-    public UserHandler(CreateOwnerUseCase createOwnerUseCase, LoginUseCase loginUseCase,
-                       CreateEmployeeUseCase createEmployeeUseCase, CreateClientUseCase createClientUseCase,
-                       GetUserUseCase getUserUseCase) {
+    public UserHandler(CreateOwnerPort createOwnerUseCase, LoginPort loginUseCase,
+                       CreateEmployeePort createEmployeeUseCase, CreateClientPort createClientUseCase,
+                       GetUserPort getUserUseCase) {
         this.createOwnerUseCase = createOwnerUseCase;
         this.loginUseCase = loginUseCase;
         this.createEmployeeUseCase = createEmployeeUseCase;

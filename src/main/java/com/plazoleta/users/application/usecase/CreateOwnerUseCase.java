@@ -1,15 +1,15 @@
-package com.plazoleta.users.application.service;
+package com.plazoleta.users.application.usecase;
 
 import com.plazoleta.users.application.dto.NewAccountCommand;
-import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
+import com.plazoleta.users.application.port.input.CreateOwnerPort;
 import com.plazoleta.users.domain.model.UserAccount;
 import com.plazoleta.users.domain.model.UserRole;
 
 /** HU-1: la cuenta queda con rol PROPIETARIO; el dominio exige que sea mayor de edad. */
-public class CreateOwnerService implements CreateOwnerUseCase {
+public class CreateOwnerUseCase implements CreateOwnerPort {
     private final AccountRegistrar registrar;
 
-    public CreateOwnerService(AccountRegistrar registrar) {
+    public CreateOwnerUseCase(AccountRegistrar registrar) {
         this.registrar = registrar;
     }
 

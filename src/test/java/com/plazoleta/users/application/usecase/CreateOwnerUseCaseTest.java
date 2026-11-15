@@ -1,4 +1,4 @@
-package com.plazoleta.users.application.service;
+package com.plazoleta.users.application.usecase;
 
 import com.plazoleta.users.application.dto.NewAccountCommand;
 import com.plazoleta.users.application.port.output.PasswordEncoderPort;
@@ -26,16 +26,16 @@ import static org.mockito.Mockito.when;
 
 /** HU-1: Crear propietario. */
 @ExtendWith(MockitoExtension.class)
-class CreateOwnerServiceTest {
+class CreateOwnerUseCaseTest {
     @Mock
     private UserAccountRepositoryPort accounts;
     @Mock
     private PasswordEncoderPort passwords;
-    private CreateOwnerService service;
+    private CreateOwnerUseCase service;
 
     @BeforeEach
     void setUp() {
-        service = new CreateOwnerService(new AccountRegistrar(accounts, passwords));
+        service = new CreateOwnerUseCase(new AccountRegistrar(accounts, passwords));
     }
 
     private static NewAccountCommand owner(String document, String phone, LocalDate birthDate, String email) {

@@ -1,7 +1,7 @@
-package com.plazoleta.users.application.service;
+package com.plazoleta.users.application.usecase;
 
 import com.plazoleta.users.application.dto.LoginResult;
-import com.plazoleta.users.application.port.input.LoginUseCase;
+import com.plazoleta.users.application.port.input.LoginPort;
 import com.plazoleta.users.application.port.output.PasswordEncoderPort;
 import com.plazoleta.users.application.port.output.TokenProviderPort;
 import com.plazoleta.users.application.port.output.UserAccountRepositoryPort;
@@ -12,12 +12,12 @@ import com.plazoleta.users.domain.model.UserAccount;
  * HU-5: valida correo y clave y emite un JWT con el id, el rol y (para empleados) el restaurante.
  * Los intentos son ilimitados y el error no revela si falló el correo o la clave.
  */
-public class LoginService implements LoginUseCase {
+public class LoginUseCase implements LoginPort {
     private final UserAccountRepositoryPort accounts;
     private final PasswordEncoderPort passwords;
     private final TokenProviderPort tokens;
 
-    public LoginService(UserAccountRepositoryPort accounts, PasswordEncoderPort passwords, TokenProviderPort tokens) {
+    public LoginUseCase(UserAccountRepositoryPort accounts, PasswordEncoderPort passwords, TokenProviderPort tokens) {
         this.accounts = accounts;
         this.passwords = passwords;
         this.tokens = tokens;

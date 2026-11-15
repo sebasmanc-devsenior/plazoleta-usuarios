@@ -11,20 +11,20 @@ import org.junit.jupiter.api.Test;
 
 import com.plazoleta.users.application.dto.LoginResult;
 import com.plazoleta.users.application.dto.NewAccountCommand;
-import com.plazoleta.users.application.port.input.CreateClientUseCase;
-import com.plazoleta.users.application.port.input.CreateEmployeeUseCase;
-import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
-import com.plazoleta.users.application.port.input.GetUserUseCase;
-import com.plazoleta.users.application.port.input.LoginUseCase;
+import com.plazoleta.users.application.port.input.CreateClientPort;
+import com.plazoleta.users.application.port.input.CreateEmployeePort;
+import com.plazoleta.users.application.port.input.CreateOwnerPort;
+import com.plazoleta.users.application.port.input.GetUserPort;
+import com.plazoleta.users.application.port.input.LoginPort;
 import com.plazoleta.users.domain.model.UserAccount;
 
 /** El handler no decide nada: pasa los datos al caso de uso que corresponde y devuelve su respuesta. */
 class UserHandlerTest {
-    private final CreateOwnerUseCase createOwnerUseCase = mock(CreateOwnerUseCase.class);
-    private final LoginUseCase loginUseCase = mock(LoginUseCase.class);
-    private final CreateEmployeeUseCase createEmployeeUseCase = mock(CreateEmployeeUseCase.class);
-    private final CreateClientUseCase createClientUseCase = mock(CreateClientUseCase.class);
-    private final GetUserUseCase getUserUseCase = mock(GetUserUseCase.class);
+    private final CreateOwnerPort createOwnerUseCase = mock(CreateOwnerPort.class);
+    private final LoginPort loginUseCase = mock(LoginPort.class);
+    private final CreateEmployeePort createEmployeeUseCase = mock(CreateEmployeePort.class);
+    private final CreateClientPort createClientUseCase = mock(CreateClientPort.class);
+    private final GetUserPort getUserUseCase = mock(GetUserPort.class);
     private final UserHandler handler = new UserHandler(createOwnerUseCase, loginUseCase, createEmployeeUseCase,
             createClientUseCase, getUserUseCase);
 

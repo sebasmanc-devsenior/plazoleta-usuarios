@@ -29,9 +29,9 @@ src/main/java/com/plazoleta/users/
 ├── application/                ← handler, casos de uso y puertos, sin Spring
 │   ├── handler/                IUserHandler (+ UserHandler)
 │   ├── port/
-│   │   ├── input/              un caso de uso por historia (CreateOwnerUseCase, LoginUseCase…)
+│   │   ├── input/              puerto de entrada de cada caso de uso (CreateOwnerPort, LoginPort…)
 │   │   └── output/             UserAccountRepositoryPort, PasswordEncoderPort, TokenProviderPort…
-│   ├── service/                implementación de cada caso de uso
+│   ├── usecase/                casos de uso: clases concretas con toda la lógica (CreateOwnerUseCase…)
 │   └── dto/                    datos que entran y salen de los casos de uso
 └── infrastructure/             ← adaptadores y frameworks
     ├── input/
@@ -47,8 +47,8 @@ src/main/java/com/plazoleta/users/
 ```
 
 Flujo de cada petición: `Controller` (solo HTTP: request DTO validado con Jakarta, mapper a comando) →
-`IXHandler` (aplicación: coordina y delega, sin reglas de negocio) → interfaz del caso de uso (`port/input`) →
-`Service` (toda la lógica) → puertos de salida → adaptadores.
+`IXHandler` (aplicación: coordina y delega, sin reglas de negocio) → puerto de entrada (`port/input`, interfaz) →
+caso de uso (`usecase`, clase concreta con toda la lógica) → puertos de salida → adaptadores.
 
 ## Cómo ejecutar
 

@@ -1,4 +1,4 @@
-package com.plazoleta.users.application.service;
+package com.plazoleta.users.application.usecase;
 
 import com.plazoleta.users.application.dto.NewAccountCommand;
 import com.plazoleta.users.application.port.output.PasswordEncoderPort;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 /** HU-6: Crear cuenta empleado (solo el dueño del restaurante). */
 @ExtendWith(MockitoExtension.class)
-class CreateEmployeeServiceTest {
+class CreateEmployeeUseCaseTest {
     private static final long OWNER_ID = 3L;
     private static final long RESTAURANT_ID = 7L;
 
@@ -35,11 +35,11 @@ class CreateEmployeeServiceTest {
     private PasswordEncoderPort passwords;
     @Mock
     private RestaurantDirectoryPort restaurants;
-    private CreateEmployeeService service;
+    private CreateEmployeeUseCase service;
 
     @BeforeEach
     void setUp() {
-        service = new CreateEmployeeService(new AccountRegistrar(accounts, passwords), restaurants);
+        service = new CreateEmployeeUseCase(new AccountRegistrar(accounts, passwords), restaurants);
     }
 
     private static NewAccountCommand employee() {

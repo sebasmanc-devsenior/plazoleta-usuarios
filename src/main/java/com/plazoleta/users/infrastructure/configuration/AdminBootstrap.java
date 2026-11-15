@@ -3,7 +3,7 @@ package com.plazoleta.users.infrastructure.configuration;
 import com.plazoleta.users.domain.util.MensajesError;
 
 import com.plazoleta.users.application.dto.NewAccountCommand;
-import com.plazoleta.users.application.port.input.BootstrapAdminUseCase;
+import com.plazoleta.users.application.port.input.BootstrapAdminPort;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 
 @Component
 public class AdminBootstrap implements ApplicationRunner {
-    private final BootstrapAdminUseCase bootstrapAdminUseCase;
+    private final BootstrapAdminPort bootstrapAdminUseCase;
     private final String email;
     private final String password;
     private final String name;
@@ -22,7 +22,7 @@ public class AdminBootstrap implements ApplicationRunner {
     private final String phone;
     private final String birthDate;
 
-    public AdminBootstrap(BootstrapAdminUseCase bootstrapAdminUseCase,
+    public AdminBootstrap(BootstrapAdminPort bootstrapAdminUseCase,
                           @Value("${app.bootstrap.admin.email}") String email,
                           @Value("${app.bootstrap.admin.password}") String password,
                           @Value("${app.bootstrap.admin.name}") String name,

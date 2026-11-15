@@ -1,4 +1,4 @@
-package com.plazoleta.users.application.service;
+package com.plazoleta.users.application.usecase;
 
 import com.plazoleta.users.application.dto.NewAccountCommand;
 import com.plazoleta.users.application.port.output.PasswordEncoderPort;
@@ -21,16 +21,16 @@ import static org.mockito.Mockito.when;
 
 /** HU-8: Crear cuenta cliente. */
 @ExtendWith(MockitoExtension.class)
-class CreateClientServiceTest {
+class CreateClientUseCaseTest {
     @Mock
     private UserAccountRepositoryPort accounts;
     @Mock
     private PasswordEncoderPort passwords;
-    private CreateClientService service;
+    private CreateClientUseCase service;
 
     @BeforeEach
     void setUp() {
-        service = new CreateClientService(new AccountRegistrar(accounts, passwords));
+        service = new CreateClientUseCase(new AccountRegistrar(accounts, passwords));
     }
 
     private static NewAccountCommand client(String email) {
