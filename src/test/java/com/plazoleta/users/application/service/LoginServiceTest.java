@@ -41,7 +41,7 @@ class LoginServiceTest {
     }
 
     @Test
-    void returnsTokenUserIdAndRoleWhenCredentialsAreValid() {
+    void returnsTokenAndAccountDataWhenCredentialsAreValid() {
         when(accounts.findByEmail("carlos@test.com")).thenReturn(Optional.of(carlos()));
         when(passwords.matches("plainPassword", "$2a$hashed")).thenReturn(true);
         when(tokens.issue(any())).thenReturn("jwt.token.mock");
@@ -49,7 +49,10 @@ class LoginServiceTest {
         LoginResult result = service.execute("carlos@test.com", "plainPassword");
 
         assertThat(result.token()).isEqualTo("jwt.token.mock");
-        assertThat(result.userId()).isEqualTo(10L);
+        assertThat(result.id()).isEqualTo(10L);
+        assertThat(result.name()).isEqualTo("Carlos");
+        assertThat(result.lastName()).isEqualTo("Gomez");
+        assertThat(result.email()).isEqualTo("carlos@test.com");
         assertThat(result.role()).isEqualTo("PROPIETARIO");
     }
 
@@ -59,7 +62,7 @@ class LoginServiceTest {
         when(passwords.matches("plainPassword", "$2a$hashed")).thenReturn(true);
         when(tokens.issue(any())).thenReturn("jwt");
 
-        assertThat(service.execute(" CARLOS@test.com ", "plainPassword").userId()).isEqualTo(10L);
+        assertThat(service.execute(" CARLOS@test.com ", "plainPassword").id()).isEqualTo(10L);
     }
 
     @Test

@@ -31,6 +31,7 @@ public class LoginService implements LoginUseCase {
         UserAccount user = accounts.findByEmail(AccountRegistrar.normalizeEmail(email))
                 .filter(account -> passwords.matches(password, account.passwordHash()))
                 .orElseThrow(AccountException::unauthorized);
-        return new LoginResult(tokens.issue(user), user.id(), user.role().name());
+        return new LoginResult(tokens.issue(user), user.id(), user.name(), user.lastName(), user.email(),
+                user.role().name());
     }
 }

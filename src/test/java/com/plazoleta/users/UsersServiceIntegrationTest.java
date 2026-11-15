@@ -172,6 +172,27 @@ class UsersServiceIntegrationTest {
         assertThat(claims.get("restaurantId") == null || claims.get("restaurantId").isNull()).isTrue();
     }
 
+    /** HU-5: el login responde token, id, nombre, apellido, correo y rol, y nunca la clave. */
+    @Test
+    void loginAnswersTheAccountDataWithoutThePassword() throws Exception {
+        String created = mvc.perform(post("/api/clients").contentType(MediaType.APPLICATION_JSON)
+                        .content(account("Sara", "Lopez", "8002", "sara@example.test", null)))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+        long id = objectMapper.readTree(created).get("id").asLong();
+
+        mvc.perform(post("/api/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"sara@example.test\",\"password\":\"valid-pass-123\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").isNotEmpty())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value("Sara"))
+                .andExpect(jsonPath("$.lastName").value("Lopez"))
+                .andExpect(jsonPath("$.email").value("sara@example.test"))
+                .andExpect(jsonPath("$.role").value("CLIENTE"))
+                .andExpect(jsonPath("$.password").doesNotExist())
+                .andExpect(jsonPath("$.passwordHash").doesNotExist());
+    }
+
     private NewAccountCommand command(String name, String identity, String email) {
         return new NewAccountCommand(name, "Test", identity, "+573001234567", LocalDate.of(1990, 1, 1), email,
                 "valid-pass-123");
