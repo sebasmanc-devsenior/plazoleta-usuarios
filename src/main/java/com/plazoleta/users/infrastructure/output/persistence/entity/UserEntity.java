@@ -1,6 +1,5 @@
 package com.plazoleta.users.infrastructure.output.persistence.entity;
 
-import com.plazoleta.users.domain.model.UserAccount;
 import com.plazoleta.users.domain.model.UserRole;
 import jakarta.persistence.*;
 
@@ -35,22 +34,26 @@ public class UserEntity {
     @Column(name = "restaurant_id")
     private Long restaurantId;
 
-    protected UserEntity() {}
+    public UserEntity() {}
 
-    public UserEntity(UserAccount user) {
-        this.id = user.id();
-        this.name = user.name();
-        this.lastName = user.lastName();
-        this.identityDocument = user.identityDocument();
-        this.phone = user.phone();
-        this.birthDate = user.birthDate();
-        this.email = user.email();
-        this.passwordHash = user.passwordHash();
-        this.role = user.role();
-        this.restaurantId = user.restaurantId();
-    }
-
-    public UserAccount toDomain() {
-        return new UserAccount(id, name, lastName, identityDocument, phone, birthDate, email, passwordHash, role, restaurantId);
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    public String getIdentityDocument() { return identityDocument; }
+    public void setIdentityDocument(String identityDocument) { this.identityDocument = identityDocument; }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+    public LocalDate getBirthDate() { return birthDate; }
+    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+    public UserRole getRole() { return role; }
+    public void setRole(UserRole role) { this.role = role; }
+    public Long getRestaurantId() { return restaurantId; }
+    public void setRestaurantId(Long restaurantId) { this.restaurantId = restaurantId; }
 }

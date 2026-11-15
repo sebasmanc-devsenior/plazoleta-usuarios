@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import com.plazoleta.users.infrastructure.output.persistence.repository.SpringUserRepository;
-import com.plazoleta.users.infrastructure.output.persistence.entity.UserEntity;
+import com.plazoleta.users.infrastructure.output.persistence.mapper.UserEntityMapper;
 
 @Repository
 public class UserPersistenceAdapter implements UserAccountRepositoryPort {
@@ -21,12 +21,12 @@ public class UserPersistenceAdapter implements UserAccountRepositoryPort {
         return repository.existsByIdentityDocument(identityDocument);
     }
     @Override public Optional<UserAccount> findByEmail(String email) {
-        return repository.findByEmailIgnoreCase(email).map(UserEntity::toDomain);
+        return repository.findByEmailIgnoreCase(email).map(UserEntityMapper::toDomain);
     }
     @Override public Optional<UserAccount> findById(long id) {
-        return repository.findById(id).map(UserEntity::toDomain);
+        return repository.findById(id).map(UserEntityMapper::toDomain);
     }
     @Override public UserAccount save(UserAccount user) {
-        return repository.save(new UserEntity(user)).toDomain();
+        return UserEntityMapper.toDomain(repository.save(UserEntityMapper.toEntity(user)));
     }
 }
