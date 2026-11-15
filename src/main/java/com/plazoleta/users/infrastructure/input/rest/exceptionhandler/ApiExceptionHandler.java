@@ -20,6 +20,8 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ApiExceptionHandler.class);
+
     @ExceptionHandler(AccountException.class)
     ResponseEntity<ErrorResponse> account(AccountException exception, HttpServletRequest request) {
         return response(HttpStatusCode.valueOf(exception.status()), exception.code(), exception.getMessage(), Map.of(), request);
@@ -48,6 +50,24 @@ public class ApiExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     ResponseEntity<ErrorResponse> duplicate(DataIntegrityViolationException exception, HttpServletRequest request) {
         return response(HttpStatus.CONFLICT, "ACCOUNT_CONFLICT", MensajesError.CORREO_O_EL_DOCUMENTO_DE_IDENTIDAD_YA,
+                Map.of(), request);
+    }
+
+    /** Error no previsto: 500 con el formato del proyecto y sin detalles internos (el detalle queda en el log). */
+    @ExceptionHandler(Exception.class)
+    ResponseEntity<ErrorResponse> unexpected(Exception ex, HttpServletRequest request) throws Exception {
+        if (ex instanceof org.springframework.security.access.AccessDeniedException
+                || ex instanceof org.springframework.security.core.AuthenticationException) {
+            throw ex; // los resuelve Spring Security: 403 o 401
+        }
+        if (ex instanceof org.springframework.web.ErrorResponse frameworkError) {
+            HttpStatusCode status = frameworkError.getStatusCode();
+            boolean notFound = status.value() == 404;
+            return response(status, notFound ? "NOT_FOUND" : "REQUEST_NOT_SUPPORTED",
+                    notFound ? MensajesError.RUTA_NO_EXISTE : MensajesError.PETICION_NO_SOPORTADA, Map.of(), request);
+        }
+        log.error("Unexpected error at {}", request.getRequestURI(), ex);
+        return response(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", MensajesError.ERROR_INTERNO_DEL_SERVIDOR,
                 Map.of(), request);
     }
 

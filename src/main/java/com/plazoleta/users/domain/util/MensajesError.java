@@ -48,6 +48,9 @@ public final class MensajesError {
     public static final String USERS_JWT_EXPIRATION_DEBE_SER_UNA_DURACION = "USERS_JWT_EXPIRATION debe ser una duración positiva";
     public static final String USUARIO_DEBE_SER_MAYOR_DE_EDAD_18 = "El usuario debe ser mayor de edad (18 años o más)";
     public static final String USUARIO_NO_EXISTE = "El usuario no existe";
+    public static final String ERROR_INTERNO_DEL_SERVIDOR = "Error interno del servidor";
+    public static final String RUTA_NO_EXISTE = "La ruta solicitada no existe";
+    public static final String PETICION_NO_SOPORTADA = "La petición no se puede procesar con ese método o formato";
 
     private MensajesError() {
     }
