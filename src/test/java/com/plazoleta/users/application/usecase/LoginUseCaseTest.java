@@ -1,4 +1,4 @@
-package com.plazoleta.users.application.service;
+package com.plazoleta.users.application.usecase;
 
 import com.plazoleta.users.application.dto.LoginResult;
 import com.plazoleta.users.application.port.output.PasswordEncoderPort;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 /** HU-5: Autenticación con correo y clave. */
 @ExtendWith(MockitoExtension.class)
-class LoginServiceTest {
+class LoginUseCaseTest {
     @Mock
     private UserAccountRepositoryPort accounts;
     @Mock
@@ -33,7 +33,7 @@ class LoginServiceTest {
     @Mock
     private TokenProviderPort tokens;
     @InjectMocks
-    private LoginService service;
+    private LoginUseCase service;
 
     private static UserAccount carlos() {
         return new UserAccount(10L, "Carlos", "Gomez", "123456", "+573001234567",

@@ -1,9 +1,9 @@
 package com.plazoleta.users;
 
 import com.plazoleta.users.application.dto.NewAccountCommand;
-import com.plazoleta.users.application.port.input.BootstrapAdminUseCase;
-import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
-import com.plazoleta.users.application.port.input.GetUserUseCase;
+import com.plazoleta.users.application.port.input.BootstrapAdminPort;
+import com.plazoleta.users.application.port.input.CreateOwnerPort;
+import com.plazoleta.users.application.port.input.GetUserPort;
 import com.plazoleta.users.application.port.output.RestaurantDirectoryPort;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UsersServiceIntegrationTest {
     @Autowired private MockMvc mvc;
     @Autowired private ObjectMapper objectMapper;
-    @Autowired private CreateOwnerUseCase createOwner;
-    @Autowired private BootstrapAdminUseCase bootstrapAdmin;
-    @Autowired private GetUserUseCase getUser;
+    @Autowired private CreateOwnerPort createOwner;
+    @Autowired private BootstrapAdminPort bootstrapAdmin;
+    @Autowired private GetUserPort getUser;
     @MockitoBean private RestaurantDirectoryPort restaurants;
     @Value("${app.internal.token}") private String internalToken;
 
