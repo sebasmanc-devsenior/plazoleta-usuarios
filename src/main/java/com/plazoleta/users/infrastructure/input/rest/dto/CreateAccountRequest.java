@@ -1,5 +1,6 @@
 package com.plazoleta.users.infrastructure.input.rest.dto;
 
+import com.plazoleta.users.domain.model.AccountRules;
 import com.plazoleta.users.domain.util.MensajesError;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,6 +21,6 @@ public record CreateAccountRequest(
         @Size(max = 13, message = MensajesError.CELULAR_DEBE_TENER_MAXIMO_13_CARACTERES) @Pattern(regexp = "^$|^(?:\\+\\d{7,12}|\\d{7,13})$", message = MensajesError.FORMATO_DEL_CELULAR_NO_ES_VALIDO) String phone,
         @PastOrPresent(message = MensajesError.FECHA_DE_NACIMIENTO_NO_PUEDE_SER_FUTURA) LocalDate birthDate,
         @NotBlank(message = MensajesError.CORREO_ES_OBLIGATORIO) @Email(message = MensajesError.FORMATO_DEL_CORREO_NO_ES_VALIDO) @Size(max = 254, message = MensajesError.CORREO_PUEDE_TENER_MAXIMO_254_CARACTERES) String email,
-        @NotBlank(message = MensajesError.CLAVE_ES_OBLIGATORIA) @Size(min = 8, max = 72, message = MensajesError.CLAVE_DEBE_TENER_ENTRE_8_Y_72) String password,
+        @NotBlank(message = MensajesError.CLAVE_ES_OBLIGATORIA) @Size(min = AccountRules.PASSWORD_MIN_LENGTH, max = AccountRules.PASSWORD_MAX_LENGTH, message = MensajesError.CLAVE_DEBE_TENER_ENTRE_6_Y_72) String password,
         @Positive(message = MensajesError.RESTAURANTID_DEBE_SER_POSITIVO) Long restaurantId) {
 }

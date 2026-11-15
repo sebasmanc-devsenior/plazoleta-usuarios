@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 public final class AccountRules {
     public static final int PHONE_MAX_LENGTH = 13;
     public static final int MIN_ADULT_AGE = 18;
+    /** La clave debe tener entre 6 y 72 caracteres (72 es el límite de BCrypt). */
+    public static final int PASSWORD_MIN_LENGTH = 6;
+    public static final int PASSWORD_MAX_LENGTH = 72;
     private static final Pattern EMAIL = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     private static final Pattern IDENTITY_DOCUMENT = Pattern.compile("\\d+");
     private static final Pattern PHONE = Pattern.compile("(?:\\+\\d{7,12}|\\d{7,13})");
@@ -36,6 +39,9 @@ public final class AccountRules {
         }
         if (password == null || password.isBlank()) {
             throw AccountException.badRequest(MensajesError.CLAVE_ES_OBLIGATORIA);
+        }
+        if (password.length() < PASSWORD_MIN_LENGTH || password.length() > PASSWORD_MAX_LENGTH) {
+            throw AccountException.badRequest(MensajesError.CLAVE_DEBE_TENER_ENTRE_6_Y_72);
         }
         if (role == null) {
             throw AccountException.badRequest(MensajesError.ROL_ES_OBLIGATORIO);

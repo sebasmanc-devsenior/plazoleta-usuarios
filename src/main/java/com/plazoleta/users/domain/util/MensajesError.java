@@ -5,14 +5,14 @@ package com.plazoleta.users.domain.util;
  * infraestructura (validaciones, excepciones y manejador de errores). Clase de Java puro, sin Spring.
  */
 public final class MensajesError {
-    public static final String ADMINISTRADOR_INICIAL_NECESITA_NOMBRE_APELLIDO_DOCUMENTO_Y = "El administrador inicial necesita nombre, apellido, documento y una clave de al menos 8 caracteres";
+    public static final String ADMINISTRADOR_INICIAL_NECESITA_NOMBRE_APELLIDO_DOCUMENTO_Y = "El administrador inicial necesita nombre, apellido, documento y una clave de al menos 6 caracteres";
     public static final String APELLIDO_ES_OBLIGATORIO = "El apellido es obligatorio";
     public static final String APELLIDO_PUEDE_TENER_MAXIMO_100_CARACTERES = "El apellido puede tener máximo 100 caracteres";
     public static final String APP_JWT_SECRET_O_USERS_JWT_SECRET = "APP_JWT_SECRET (o USERS_JWT_SECRET) debe tener al menos 32 bytes";
     public static final String AUTENTICACION_ENTRE_SERVICIOS_NO_ESTA_CONFIGURADA = "La autenticación entre servicios no está configurada";
     public static final String CELULAR_DEBE_TENER_MAXIMO_13_CARACTERES = "El celular debe tener máximo 13 caracteres";
     public static final String CELULAR_DEBE_TENER_MAXIMO_13_CARACTERES_Y = "El celular debe tener máximo 13 caracteres y puede empezar con +";
-    public static final String CLAVE_DEBE_TENER_ENTRE_8_Y_72 = "La clave debe tener entre 8 y 72 caracteres";
+    public static final String CLAVE_DEBE_TENER_ENTRE_6_Y_72 = "La clave debe tener entre 6 y 72 caracteres";
     public static final String CLAVE_ES_OBLIGATORIA = "La clave es obligatoria";
     public static final String CLAVE_PUEDE_TENER_MAXIMO_72_CARACTERES = "La clave puede tener máximo 72 caracteres";
     public static final String CONFIGURA_ADMIN_BOOTSTRAP_EMAIL_Y_ADMIN_BOOTSTRAP = "Configura ADMIN_BOOTSTRAP_EMAIL y ADMIN_BOOTSTRAP_PASSWORD juntos, o ninguno";

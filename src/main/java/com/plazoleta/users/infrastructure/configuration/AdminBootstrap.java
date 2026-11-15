@@ -1,5 +1,6 @@
 package com.plazoleta.users.infrastructure.configuration;
 
+import com.plazoleta.users.domain.model.AccountRules;
 import com.plazoleta.users.domain.util.MensajesError;
 
 import com.plazoleta.users.application.dto.NewAccountCommand;
@@ -48,7 +49,7 @@ public class AdminBootstrap implements ApplicationRunner {
         if (noEmail || noPassword) {
             throw new IllegalStateException(MensajesError.CONFIGURA_ADMIN_BOOTSTRAP_EMAIL_Y_ADMIN_BOOTSTRAP);
         }
-        if (name.isBlank() || lastName.isBlank() || identityDocument.isBlank() || password.length() < 8) {
+        if (name.isBlank() || lastName.isBlank() || identityDocument.isBlank() || password.length() < AccountRules.PASSWORD_MIN_LENGTH) {
             throw new IllegalStateException(MensajesError.ADMINISTRADOR_INICIAL_NECESITA_NOMBRE_APELLIDO_DOCUMENTO_Y);
         }
         bootstrapAdminUseCase.execute(new NewAccountCommand(name, lastName, identityDocument, blankToNull(phone),
