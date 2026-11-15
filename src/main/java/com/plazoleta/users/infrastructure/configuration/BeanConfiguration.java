@@ -1,5 +1,7 @@
 package com.plazoleta.users.infrastructure.configuration;
 
+import com.plazoleta.users.application.handler.IUserHandler;
+import com.plazoleta.users.application.handler.UserHandler;
 import com.plazoleta.users.application.port.input.BootstrapAdminUseCase;
 import com.plazoleta.users.application.port.input.CreateClientUseCase;
 import com.plazoleta.users.application.port.input.CreateEmployeeUseCase;
@@ -67,5 +69,14 @@ public class BeanConfiguration {
     @Bean
     public CreateClientUseCase createClientUseCase(AccountRegistrar registrar) {
         return new CreateClientService(registrar);
+    }
+
+    /** Handler que usan los controladores de usuarios: delega en los casos de uso. */
+    @Bean
+    public IUserHandler userHandler(CreateOwnerUseCase createOwnerUseCase, LoginUseCase loginUseCase,
+                                    CreateEmployeeUseCase createEmployeeUseCase,
+                                    CreateClientUseCase createClientUseCase, GetUserUseCase getUserUseCase) {
+        return new UserHandler(createOwnerUseCase, loginUseCase, createEmployeeUseCase, createClientUseCase,
+                getUserUseCase);
     }
 }

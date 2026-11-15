@@ -3,7 +3,6 @@ package com.plazoleta.users.infrastructure.input.rest.dto;
 import com.plazoleta.users.domain.util.MensajesError;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.plazoleta.users.application.dto.NewAccountCommand;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -23,8 +22,4 @@ public record CreateAccountRequest(
         @NotBlank(message = MensajesError.CORREO_ES_OBLIGATORIO) @Email(message = MensajesError.FORMATO_DEL_CORREO_NO_ES_VALIDO) @Size(max = 254, message = MensajesError.CORREO_PUEDE_TENER_MAXIMO_254_CARACTERES) String email,
         @NotBlank(message = MensajesError.CLAVE_ES_OBLIGATORIA) @Size(min = 8, max = 72, message = MensajesError.CLAVE_DEBE_TENER_ENTRE_8_Y_72) String password,
         @Positive(message = MensajesError.RESTAURANTID_DEBE_SER_POSITIVO) Long restaurantId) {
-
-    public NewAccountCommand toCommand() {
-        return new NewAccountCommand(name, lastName, identityDocument, phone, birthDate, email, password);
-    }
 }

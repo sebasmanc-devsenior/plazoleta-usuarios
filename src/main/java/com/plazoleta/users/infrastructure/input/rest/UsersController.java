@@ -2,15 +2,13 @@ package com.plazoleta.users.infrastructure.input.rest;
 
 import com.plazoleta.users.domain.util.MensajesError;
 
-import com.plazoleta.users.application.port.input.CreateClientUseCase;
-import com.plazoleta.users.application.port.input.CreateEmployeeUseCase;
-import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
-import com.plazoleta.users.application.port.input.LoginUseCase;
+import com.plazoleta.users.application.handler.IUserHandler;
 import com.plazoleta.users.infrastructure.input.rest.dto.AccountResponse;
 import com.plazoleta.users.infrastructure.input.rest.dto.CreateAccountRequest;
 import com.plazoleta.users.infrastructure.input.rest.dto.EmployeeAccountResponse;
 import com.plazoleta.users.infrastructure.input.rest.dto.LoginRequest;
 import com.plazoleta.users.infrastructure.input.rest.dto.LoginResponse;
+import com.plazoleta.users.infrastructure.input.rest.mapper.AccountRequestMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,17 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @Tag(name = "Users", description = "Accounts, roles and authentication")
 public class UsersController {
-    private final CreateOwnerUseCase createOwnerUseCase;
-    private final LoginUseCase loginUseCase;
-    private final CreateEmployeeUseCase createEmployeeUseCase;
-    private final CreateClientUseCase createClientUseCase;
+    private final IUserHandler userHandler;
 
-    public UsersController(CreateOwnerUseCase createOwnerUseCase, LoginUseCase loginUseCase,
-                           CreateEmployeeUseCase createEmployeeUseCase, CreateClientUseCase createClientUseCase) {
-        this.createOwnerUseCase = createOwnerUseCase;
-        this.loginUseCase = loginUseCase;
-        this.createEmployeeUseCase = createEmployeeUseCase;
-        this.createClientUseCase = createClientUseCase;
+    public UsersController(IUserHandler userHandler) {
+        this.userHandler = userHandler;
     }
 
     @PostMapping("/owners")
@@ -46,13 +37,13 @@ public class UsersController {
     @Operation(summary = "HU-1 Create owner", description = "ADMIN only. The user must be at least 18 years old.")
     public AccountResponse createOwner(@Valid @RequestBody CreateAccountRequest request) {
         requireNoRestaurant(request);
-        return AccountResponse.from(createOwnerUseCase.execute(request.toCommand()));
+        return AccountResponse.from(userHandler.createOwner(AccountRequestMapper.toCommand(request)));
     }
 
     @PostMapping("/login")
     @Operation(summary = "HU-5 Log in", description = "Returns the JWT and the user's id, name, last name, email and role.")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
-        var result = loginUseCase.execute(request.email(), request.password());
+        var result = userHandler.login(request.email(), request.password());
         return new LoginResponse(result.token(), result.id(), result.name(), result.lastName(), result.email(),
                 result.role());
     }
@@ -66,7 +57,7 @@ public class UsersController {
         // El id del propietario sale del JWT (subject), nunca del cuerpo de la petición.
         long requesterId = Long.parseLong(authentication.getName());
         return EmployeeAccountResponse.from(
-                createEmployeeUseCase.execute(request.toCommand(), request.restaurantId(), requesterId));
+                userHandler.createEmployee(AccountRequestMapper.toCommand(request), request.restaurantId(), requesterId));
     }
 
     @PostMapping("/clients")
@@ -74,7 +65,7 @@ public class UsersController {
     @Operation(summary = "HU-8 Create client account", description = "Public sign-up; the account gets the CLIENTE role.")
     public AccountResponse createClient(@Valid @RequestBody CreateAccountRequest request) {
         requireNoRestaurant(request);
-        return AccountResponse.from(createClientUseCase.execute(request.toCommand()));
+        return AccountResponse.from(userHandler.createClient(AccountRequestMapper.toCommand(request)));
     }
 
     private void requireNoRestaurant(CreateAccountRequest request) {
