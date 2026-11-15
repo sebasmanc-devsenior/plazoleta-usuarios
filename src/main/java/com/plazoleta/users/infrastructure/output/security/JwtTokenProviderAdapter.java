@@ -1,5 +1,7 @@
 package com.plazoleta.users.infrastructure.output.security;
 
+import com.plazoleta.users.domain.util.MensajesError;
+
 import com.plazoleta.users.application.port.output.TokenProviderPort;
 import com.plazoleta.users.domain.model.UserAccount;
 import io.jsonwebtoken.Jwts;
@@ -22,10 +24,10 @@ public class JwtTokenProviderAdapter implements TokenProviderPort {
     public JwtTokenProviderAdapter(@Value("${app.jwt.secret}") String secret,
                                    @Value("${app.jwt.expiration}") Duration expiration) {
         if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length < 32) {
-            throw new IllegalStateException("APP_JWT_SECRET (o USERS_JWT_SECRET) debe tener al menos 32 bytes");
+            throw new IllegalStateException(MensajesError.APP_JWT_SECRET_O_USERS_JWT_SECRET);
         }
         if (expiration == null || expiration.isZero() || expiration.isNegative()) {
-            throw new IllegalStateException("USERS_JWT_EXPIRATION debe ser una duración positiva");
+            throw new IllegalStateException(MensajesError.USERS_JWT_EXPIRATION_DEBE_SER_UNA_DURACION);
         }
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expiration = expiration;

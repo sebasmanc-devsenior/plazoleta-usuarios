@@ -1,5 +1,7 @@
 package com.plazoleta.users.application.service;
 
+import com.plazoleta.users.domain.util.MensajesError;
+
 import com.plazoleta.users.application.dto.NewAccountCommand;
 import com.plazoleta.users.application.port.input.CreateEmployeeUseCase;
 import com.plazoleta.users.application.port.output.RestaurantDirectoryPort;
@@ -23,11 +25,11 @@ public class CreateEmployeeService implements CreateEmployeeUseCase {
     @Override
     public UserAccount execute(NewAccountCommand command, Long restaurantId, long requesterId) {
         if (restaurantId == null || restaurantId <= 0) {
-            throw AccountException.badRequest("Las cuentas de EMPLEADO necesitan un restaurantId positivo");
+            throw AccountException.badRequest(MensajesError.CUENTAS_DE_EMPLEADO_NECESITAN_UN_RESTAURANTID_POSITIVO);
         }
         long ownerId = restaurants.findOwnerId(restaurantId).orElseThrow(AccountException::restaurantNotFound);
         if (ownerId != requesterId) {
-            throw AccountException.forbidden("Solo el propietario del restaurante puede crear sus empleados");
+            throw AccountException.forbidden(MensajesError.SOLO_EL_PROPIETARIO_DEL_RESTAURANTE_PUEDE_CREAR);
         }
         return registrar.register(command, UserRole.EMPLEADO, restaurantId);
     }

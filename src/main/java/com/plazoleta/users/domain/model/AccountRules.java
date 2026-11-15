@@ -1,5 +1,7 @@
 package com.plazoleta.users.domain.model;
 
+import com.plazoleta.users.domain.util.MensajesError;
+
 import com.plazoleta.users.domain.exception.AccountException;
 import com.plazoleta.users.domain.model.UserRole;
 
@@ -21,10 +23,10 @@ public final class AccountRules {
                                           LocalDate birthDate, String email, String password, UserRole role,
                                           Long restaurantId) {
         if (name == null || name.isBlank()) {
-            throw AccountException.badRequest("El nombre es obligatorio");
+            throw AccountException.badRequest(MensajesError.NOMBRE_ES_OBLIGATORIO);
         }
         if (lastName == null || lastName.isBlank()) {
-            throw AccountException.badRequest("El apellido es obligatorio");
+            throw AccountException.badRequest(MensajesError.APELLIDO_ES_OBLIGATORIO);
         }
         if (identityDocument == null || !IDENTITY_DOCUMENT.matcher(identityDocument.trim()).matches()) {
             throw AccountException.invalidIdentityDocument();
@@ -33,10 +35,10 @@ public final class AccountRules {
             throw AccountException.invalidEmail();
         }
         if (password == null || password.isBlank()) {
-            throw AccountException.badRequest("La clave es obligatoria");
+            throw AccountException.badRequest(MensajesError.CLAVE_ES_OBLIGATORIA);
         }
         if (role == null) {
-            throw AccountException.badRequest("El rol es obligatorio");
+            throw AccountException.badRequest(MensajesError.ROL_ES_OBLIGATORIO);
         }
         if (role != UserRole.ADMIN) {
             if (phone == null || phone.isBlank() || phone.length() > PHONE_MAX_LENGTH
@@ -51,7 +53,7 @@ public final class AccountRules {
             requireAdult(birthDate);
         }
         if ((role == UserRole.EMPLEADO) != (restaurantId != null)) {
-            throw AccountException.badRequest("restaurantId solo se usa en cuentas de EMPLEADO");
+            throw AccountException.badRequest(MensajesError.RESTAURANTID_SOLO_SE_USA_EN_CUENTAS_DE);
         }
     }
 

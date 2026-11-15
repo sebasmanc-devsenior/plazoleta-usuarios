@@ -1,5 +1,7 @@
 package com.plazoleta.users.infrastructure.input.rest.exceptionhandler;
 
+import com.plazoleta.users.domain.util.MensajesError;
+
 import com.plazoleta.users.domain.exception.AccountException;
 import com.plazoleta.users.infrastructure.input.rest.InternalUsersController;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,17 +37,17 @@ public class ApiExceptionHandler {
         Map<String, String> details = new LinkedHashMap<>();
         exception.getBindingResult().getFieldErrors()
                 .forEach(error -> details.putIfAbsent(error.getField(), error.getDefaultMessage()));
-        return response(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED", "La petición tiene datos inválidos", details, request);
+        return response(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED", MensajesError.PETICION_TIENE_DATOS_INVALIDOS, details, request);
     }
 
     @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class})
     ResponseEntity<ErrorResponse> badRequest(Exception exception, HttpServletRequest request) {
-        return response(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "La petición no es válida", Map.of(), request);
+        return response(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", MensajesError.PETICION_NO_ES_VALIDA, Map.of(), request);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     ResponseEntity<ErrorResponse> duplicate(DataIntegrityViolationException exception, HttpServletRequest request) {
-        return response(HttpStatus.CONFLICT, "ACCOUNT_CONFLICT", "El correo o el documento de identidad ya están registrados",
+        return response(HttpStatus.CONFLICT, "ACCOUNT_CONFLICT", MensajesError.CORREO_O_EL_DOCUMENTO_DE_IDENTIDAD_YA,
                 Map.of(), request);
     }
 

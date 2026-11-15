@@ -1,5 +1,7 @@
 package com.plazoleta.users.infrastructure.input.rest;
 
+import com.plazoleta.users.domain.util.MensajesError;
+
 import com.plazoleta.users.application.port.input.CreateClientUseCase;
 import com.plazoleta.users.application.port.input.CreateEmployeeUseCase;
 import com.plazoleta.users.application.port.input.CreateOwnerUseCase;
@@ -77,7 +79,7 @@ public class UsersController {
 
     private void requireNoRestaurant(CreateAccountRequest request) {
         if (request.restaurantId() != null) {
-            throw new IllegalArgumentException("restaurantId no se permite para este tipo de cuenta");
+            throw new IllegalArgumentException(MensajesError.RESTAURANTID_NO_SE_PERMITE_PARA_ESTE_TIPO);
         }
     }
 }

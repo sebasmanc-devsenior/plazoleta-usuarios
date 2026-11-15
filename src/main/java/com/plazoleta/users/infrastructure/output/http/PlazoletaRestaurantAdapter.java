@@ -1,5 +1,7 @@
 package com.plazoleta.users.infrastructure.output.http;
 
+import com.plazoleta.users.domain.util.MensajesError;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import java.time.Duration;
 import com.plazoleta.users.application.port.output.RestaurantDirectoryPort;
@@ -45,10 +47,10 @@ public class PlazoletaRestaurantAdapter implements RestaurantDirectoryPort {
             if (ex.getStatusCode().value() == 404) {
                 return Optional.empty();
             }
-            throw AccountException.dependencyUnavailable("El servicio de restaurantes rechazó la consulta (HTTP "
+            throw AccountException.dependencyUnavailable(MensajesError.SERVICIO_DE_RESTAURANTES_RECHAZO_LA_CONSULTA_HTTP
                     + ex.getStatusCode().value() + ")");
         } catch (RestClientException ex) {
-            throw AccountException.dependencyUnavailable("El servicio de restaurantes no está disponible");
+            throw AccountException.dependencyUnavailable(MensajesError.SERVICIO_DE_RESTAURANTES_NO_ESTA_DISPONIBLE);
         }
     }
 
