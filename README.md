@@ -40,6 +40,7 @@ src/main/java/com/plazoleta/users/
     │   ├── persistence/
     │   │   ├── entity/         UserEntity (tabla users)
     │   │   ├── repository/     SpringUserRepository (Spring Data JPA)
+    │   │   ├── mapper/         UserEntityMapper (entidad ↔ dominio)
     │   │   └── adapter/        UserPersistenceAdapter (implementa el puerto)
     │   ├── security/           BCrypt y JWT
     │   └── http/               consulta al servicio de restaurantes
