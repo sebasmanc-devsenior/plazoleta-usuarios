@@ -97,6 +97,6 @@ class CreateEmployeeServiceTest {
 
         assertThatThrownBy(() -> service.execute(badDocument, RESTAURANT_ID, OWNER_ID))
                 .isInstanceOf(AccountException.class)
-                .hasMessageContaining("only digits");
+                .hasMessageContaining("solo puede tener dígitos");
     }
 }

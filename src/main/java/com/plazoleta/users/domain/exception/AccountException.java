@@ -18,11 +18,11 @@ public class AccountException extends RuntimeException {
     }
 
     public static AccountException unauthorized() {
-        return new AccountException(401, "INVALID_CREDENTIALS", "Invalid email or password");
+        return new AccountException(401, "INVALID_CREDENTIALS", "Correo o clave incorrectos");
     }
 
     public static AccountException notFound() {
-        return new AccountException(404, "USER_NOT_FOUND", "User was not found");
+        return new AccountException(404, "USER_NOT_FOUND", "El usuario no existe");
     }
 
     public static AccountException forbidden(String message) {
@@ -30,7 +30,7 @@ public class AccountException extends RuntimeException {
     }
 
     public static AccountException restaurantNotFound() {
-        return new AccountException(404, "RESTAURANT_NOT_FOUND", "Restaurant was not found");
+        return new AccountException(404, "RESTAURANT_NOT_FOUND", "El restaurante no existe");
     }
 
     public static AccountException dependencyUnavailable(String message) {
@@ -42,20 +42,20 @@ public class AccountException extends RuntimeException {
     }
 
     public static AccountException invalidEmail() {
-        return new AccountException(400, "INVALID_EMAIL", "Email format is invalid");
+        return new AccountException(400, "INVALID_EMAIL", "El formato del correo no es válido");
     }
 
     public static AccountException invalidPhone() {
         return new AccountException(400, "INVALID_PHONE",
-                "Phone must be at most 13 characters and may start with +");
+                "El celular debe tener máximo 13 caracteres y puede empezar con +");
     }
 
     public static AccountException invalidIdentityDocument() {
         return new AccountException(400, "INVALID_IDENTITY_DOCUMENT",
-                "Identity document must contain only digits");
+                "El documento de identidad solo puede tener dígitos");
     }
 
     public static AccountException underage() {
-        return new AccountException(400, "UNDERAGE_USER", "The user must be at least 18 years old");
+        return new AccountException(400, "UNDERAGE_USER", "El usuario debe ser mayor de edad (18 años o más)");
     }
 }

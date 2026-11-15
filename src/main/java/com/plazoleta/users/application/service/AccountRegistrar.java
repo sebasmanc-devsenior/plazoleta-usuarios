@@ -25,17 +25,17 @@ public class AccountRegistrar {
 
     public UserAccount register(NewAccountCommand command, UserRole role, Long restaurantId) {
         if (command == null) {
-            throw AccountException.badRequest("Request body is required");
+            throw AccountException.badRequest("El cuerpo de la petición es obligatorio");
         }
         AccountRules.validateNewAccount(command.name(), command.lastName(), command.identityDocument(),
                 command.phone(), command.birthDate(), command.email(), command.password(), role, restaurantId);
         String email = normalizeEmail(command.email());
         String identityDocument = command.identityDocument().trim();
         if (accounts.existsByEmail(email)) {
-            throw AccountException.conflict("Email is already registered");
+            throw AccountException.conflict("El correo ya está registrado");
         }
         if (accounts.existsByIdentityDocument(identityDocument)) {
-            throw AccountException.conflict("Identity document is already registered");
+            throw AccountException.conflict("El documento de identidad ya está registrado");
         }
         String phone = command.phone() == null ? null : command.phone().trim();
         return accounts.save(new UserAccount(null, command.name().trim(), command.lastName().trim(), identityDocument,

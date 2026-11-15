@@ -45,10 +45,10 @@ public class PlazoletaRestaurantAdapter implements RestaurantDirectoryPort {
             if (ex.getStatusCode().value() == 404) {
                 return Optional.empty();
             }
-            throw AccountException.dependencyUnavailable("Plazoleta rejected the restaurant lookup (HTTP "
+            throw AccountException.dependencyUnavailable("El servicio de restaurantes rechazó la consulta (HTTP "
                     + ex.getStatusCode().value() + ")");
         } catch (RestClientException ex) {
-            throw AccountException.dependencyUnavailable("Plazoleta service is unavailable");
+            throw AccountException.dependencyUnavailable("El servicio de restaurantes no está disponible");
         }
     }
 

@@ -35,17 +35,17 @@ public class ApiExceptionHandler {
         Map<String, String> details = new LinkedHashMap<>();
         exception.getBindingResult().getFieldErrors()
                 .forEach(error -> details.putIfAbsent(error.getField(), error.getDefaultMessage()));
-        return response(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED", "Request validation failed", details, request);
+        return response(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED", "La petición tiene datos inválidos", details, request);
     }
 
     @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class})
     ResponseEntity<ErrorResponse> badRequest(Exception exception, HttpServletRequest request) {
-        return response(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "Request is invalid", Map.of(), request);
+        return response(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "La petición no es válida", Map.of(), request);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     ResponseEntity<ErrorResponse> duplicate(DataIntegrityViolationException exception, HttpServletRequest request) {
-        return response(HttpStatus.CONFLICT, "ACCOUNT_CONFLICT", "Email or identity document is already registered",
+        return response(HttpStatus.CONFLICT, "ACCOUNT_CONFLICT", "El correo o el documento de identidad ya están registrados",
                 Map.of(), request);
     }
 

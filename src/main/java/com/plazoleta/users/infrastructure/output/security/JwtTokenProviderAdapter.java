@@ -22,10 +22,10 @@ public class JwtTokenProviderAdapter implements TokenProviderPort {
     public JwtTokenProviderAdapter(@Value("${app.jwt.secret}") String secret,
                                    @Value("${app.jwt.expiration}") Duration expiration) {
         if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length < 32) {
-            throw new IllegalStateException("APP_JWT_SECRET (or legacy USERS_JWT_SECRET) must contain at least 32 bytes");
+            throw new IllegalStateException("APP_JWT_SECRET (o USERS_JWT_SECRET) debe tener al menos 32 bytes");
         }
         if (expiration == null || expiration.isZero() || expiration.isNegative()) {
-            throw new IllegalStateException("USERS_JWT_EXPIRATION must be a positive duration");
+            throw new IllegalStateException("USERS_JWT_EXPIRATION debe ser una duración positiva");
         }
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expiration = expiration;

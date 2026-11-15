@@ -85,7 +85,7 @@ class CreateOwnerServiceTest {
         assertThatThrownBy(() -> service.execute(owner("100200300", "+573005698325",
                 LocalDate.now().minusYears(17), "owner@plazoleta.com")))
                 .isInstanceOf(AccountException.class)
-                .hasMessageContaining("18 years");
+                .hasMessageContaining("mayor de edad");
         verify(accounts, never()).save(any());
     }
 
@@ -110,7 +110,7 @@ class CreateOwnerServiceTest {
         assertThatThrownBy(() -> service.execute(owner("100200300", "+573005698325",
                 LocalDate.of(1990, 1, 1), email)))
                 .isInstanceOf(AccountException.class)
-                .hasMessageContaining("Email format is invalid");
+                .hasMessageContaining("El formato del correo no es válido");
     }
 
     @ParameterizedTest
@@ -119,7 +119,7 @@ class CreateOwnerServiceTest {
         assertThatThrownBy(() -> service.execute(owner(document, "+573005698325",
                 LocalDate.of(1990, 1, 1), "owner@plazoleta.com")))
                 .isInstanceOf(AccountException.class)
-                .hasMessageContaining("only digits");
+                .hasMessageContaining("solo puede tener dígitos");
     }
 
     @ParameterizedTest
@@ -128,7 +128,7 @@ class CreateOwnerServiceTest {
         assertThatThrownBy(() -> service.execute(owner("100200300", phone,
                 LocalDate.of(1990, 1, 1), "owner@plazoleta.com")))
                 .isInstanceOf(AccountException.class)
-                .hasMessageContaining("Phone must be at most 13 characters");
+                .hasMessageContaining("El celular debe tener máximo 13 caracteres");
     }
 
     @ParameterizedTest
@@ -147,7 +147,7 @@ class CreateOwnerServiceTest {
 
         assertThatThrownBy(() -> service.execute(validOwner()))
                 .isInstanceOf(AccountException.class)
-                .hasMessageContaining("Email is already registered");
+                .hasMessageContaining("El correo ya está registrado");
         verify(accounts, never()).save(any());
     }
 
@@ -157,7 +157,7 @@ class CreateOwnerServiceTest {
 
         assertThatThrownBy(() -> service.execute(validOwner()))
                 .isInstanceOf(AccountException.class)
-                .hasMessageContaining("Identity document is already registered");
+                .hasMessageContaining("El documento de identidad ya está registrado");
         verify(accounts, never()).save(any());
     }
 

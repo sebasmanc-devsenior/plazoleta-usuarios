@@ -61,7 +61,7 @@ class CreateClientServiceTest {
     void rejectsInvalidEmail() {
         assertThatThrownBy(() -> service.execute(client("laura-arroba-test")))
                 .isInstanceOf(AccountException.class)
-                .hasMessageContaining("Email format is invalid");
+                .hasMessageContaining("El formato del correo no es válido");
         verify(accounts, never()).save(any());
     }
 
@@ -79,6 +79,6 @@ class CreateClientServiceTest {
 
         assertThatThrownBy(() -> service.execute(client("laura@test.com")))
                 .isInstanceOf(AccountException.class)
-                .hasMessageContaining("Email is already registered");
+                .hasMessageContaining("El correo ya está registrado");
     }
 }
