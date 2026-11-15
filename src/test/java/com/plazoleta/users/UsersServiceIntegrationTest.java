@@ -193,6 +193,21 @@ class UsersServiceIntegrationTest {
                 .andExpect(jsonPath("$.passwordHash").doesNotExist());
     }
 
+    /** Lista del profesor: la clave debe tener mínimo 6 caracteres. */
+    @Test
+    void clientSignUpRequiresAPasswordOfAtLeast6Characters() throws Exception {
+        mvc.perform(post("/api/clients").contentType(MediaType.APPLICATION_JSON)
+                        .content(account("Tomas", "Client", "8003", "tomas@example.test", null)
+                                .replace("valid-pass-123", "12345")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.details.password").value("La clave debe tener entre 6 y 72 caracteres"));
+
+        mvc.perform(post("/api/clients").contentType(MediaType.APPLICATION_JSON)
+                        .content(account("Tomas", "Client", "8003", "tomas@example.test", null)
+                                .replace("valid-pass-123", "123456")))
+                .andExpect(status().isCreated());
+    }
+
     private NewAccountCommand command(String name, String identity, String email) {
         return new NewAccountCommand(name, "Test", identity, "+573001234567", LocalDate.of(1990, 1, 1), email,
                 "valid-pass-123");

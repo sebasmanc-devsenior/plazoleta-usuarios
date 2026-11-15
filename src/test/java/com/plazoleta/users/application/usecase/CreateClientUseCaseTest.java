@@ -81,4 +81,25 @@ class CreateClientUseCaseTest {
                 .isInstanceOf(AccountException.class)
                 .hasMessageContaining("El correo ya está registrado");
     }
+
+    @Test
+    void rejectsAPasswordShorterThan6Characters() {
+        NewAccountCommand shortPassword = new NewAccountCommand("Laura", "Diaz", "55667788", "+573201112233", null,
+                "laura@test.com", "12345");
+
+        assertThatThrownBy(() -> service.execute(shortPassword))
+                .isInstanceOf(AccountException.class)
+                .hasMessage("La clave debe tener entre 6 y 72 caracteres");
+        verify(accounts, never()).save(any());
+    }
+
+    @Test
+    void acceptsAPasswordOfExactly6Characters() {
+        when(passwords.encode("123456")).thenReturn("$2a$hash");
+        when(accounts.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        NewAccountCommand sixCharacters = new NewAccountCommand("Laura", "Diaz", "55667788", "+573201112233", null,
+                "laura@test.com", "123456");
+
+        assertThat(service.execute(sixCharacters).role()).isEqualTo(UserRole.CLIENTE);
+    }
 }
