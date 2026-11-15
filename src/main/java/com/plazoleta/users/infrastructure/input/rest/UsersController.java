@@ -48,10 +48,11 @@ public class UsersController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "HU-5 Log in", description = "Returns a JWT with the user's id and role.")
+    @Operation(summary = "HU-5 Log in", description = "Returns the JWT and the user's id, name, last name, email and role.")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         var result = loginUseCase.execute(request.email(), request.password());
-        return new LoginResponse(result.token(), result.userId(), result.role());
+        return new LoginResponse(result.token(), result.id(), result.name(), result.lastName(), result.email(),
+                result.role());
     }
 
     @PostMapping("/employees")
